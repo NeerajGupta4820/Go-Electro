@@ -1,0 +1,167 @@
+.product-table-container {
+  padding: 10px;
+}
+
+.all-products-heading {
+  display: flex;
+  justify-content: center;
+  font-size: 1.8rem; /* Adjust font size for larger screens */
+}
+.main-product-table-container{
+  display: flex;
+  justify-content: center;
+}
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.product-table th{
+  background-color: #28a745;
+  color: white;
+}
+.product-table th, .product-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.product-table-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.product-row {
+  cursor: pointer;
+}
+
+.product-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+}
+
+.popup-content h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.popup-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.popup-content p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+.edit-btn, .delete-btn {
+  margin-right: 5px;
+  padding: 5px 10px;
+  width: 4rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+  opacity: 0.8;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .all-products-heading {
+    font-size: 1.5rem;
+  }
+
+  .product-table th, .product-table td {
+    font-size: 0.9rem; /* Decrease font size for tablet screens */
+    padding: 8px;
+  }
+
+  .popup-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .popup-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .popup-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .edit-btn, .delete-btn {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 707px){
+  .delete-btn{
+    margin-top: 0.4rem;
+  }
+}
+@media (max-width: 480px) {
+  .all-products-heading {
+    font-size: 1.2rem;
+  }
+
+  .product-table th, .product-table td {
+    font-size: 0.7rem; /* Further decrease font size for mobile screens */
+    padding: 6px;
+  }
+
+  .popup-content {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .popup-content h2 {
+    font-size: 1.1rem;
+  }
+
+  .popup-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .edit-btn, .delete-btn {
+    padding: 3px 6px;
+    font-size: 0.8rem;
+  }
+}

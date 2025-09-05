@@ -1,0 +1,347 @@
+/* Professional Sticky Categories Bar UI */
+.pro-sticky-bar {
+  position: sticky;
+  top: 60px;
+  z-index: 999;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(30,40,80,0.07);
+  padding: 0.5rem 0;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+.pro-sticky-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pro-sticky-list-item {
+  display: flex;
+  align-items: center;
+}
+.pro-sticky-btn {
+  background: none;
+  border: none;
+  color: #232a3a;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding: 0.2rem 0.8rem 0.2rem 0.2rem;
+  border-radius: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1px 4px rgba(30,40,80,0.04);
+}
+.pro-sticky-btn:hover {
+  background: #f7f7f7;
+  color: #408de4;
+  box-shadow: 0 2px 8px #ffd70022;
+}
+.pro-sticky-category-img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(30,40,80,0.08);
+  margin-right: 0.2rem;
+  background: #f7f7f7;
+  border: 1px solid #eee;
+}
+.pro-sticky-category-name {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: inherit;
+  font-family: inherit;
+}
+/* Sticky Categories Bar (Home only) */
+.sticky-categories-bar {
+  position: sticky;
+  top: 60px;
+  z-index: 999;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(30,40,80,0.07);
+  padding: 0.5rem 0;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+.sticky-categories-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 10px 0 0 0;
+}
+.sticky-category-btn {
+  background: none;
+  border: none;
+  color: #232a3a;
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 500;
+  padding: 0.3rem 1.1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  background: #d3e1f04f;
+  color: #408de4;
+}
+.sticky-category-btn:hover {
+  background: #7a6f3022;
+  color: #408de4;
+}
+
+/* Premium Royal Electronics Navbar Styles */
+/* Simple & Professional Navbar */
+.pro-electro-navbar {
+  background: #fff;
+  color: #232a3a;
+  font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+  padding: 0.3rem 2.2rem;
+  min-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(30, 40, 80, 0.07);
+/* Container */
+}
+.pro-electro-navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Logo */
+.pro-electro-navbar-logo a {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #232a3a;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+}
+.pro-electro-logo-image {
+  height: 36px;
+  width: auto;
+  margin-right: 0.5rem;
+  filter: none;
+  transition: transform 0.18s ease;
+}
+.pro-electro-logo-image:hover {
+  transform: scale(1.07);
+}
+.pro-electro-logo-text {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #232a3a;
+  margin-left: 0.5rem;
+  text-shadow: none;
+  display: block;
+}
+@media (max-width: 768px) {
+  .pro-electro-logo-text {
+    font-size: 1.3rem;
+  }
+  .pro-electro-logo-image {
+    height: 36px;
+  }
+}
+/* Search Bar */
+.pro-electro-navbar-search {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 400px;
+  margin: 0 1.2rem;
+}
+.pro-electro-search-input {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px 0 0 4px;
+  width: 100%;
+  font-size: 0.98rem;
+  background: #f7f7f7;
+  color: #232a3a;
+  font-family: inherit;
+  transition: border-color 0.18s;
+}
+.pro-electro-search-input:focus {
+  border-color: #408de4;
+}
+.pro-electro-search-button {
+  padding: 0.7rem 1rem;
+  background: #408de4;
+  color: #fff;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s;
+}
+.pro-electro-search-button:hover {
+  background: #2862a5;
+  color: #232a3a;
+}
+/* Links */
+.pro-electro-navbar-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+}
+.pro-electro-navbar-links li {
+  margin: 0 0.7rem;
+}
+.pro-electro-navbar-links a {
+  text-decoration: none;
+  color: #232a3a;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.18s;
+}
+.pro-electro-navbar-links a:hover {
+  color: #408de4;
+}
+.pro-electro-user-dropdown {
+  position: relative;
+  color: #408de4;
+}
+.pro-electro-dropdown-menu {
+  background: #fff;
+  color: #232a3a;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px #e0e0e0;
+  padding: 0.45rem 0.2rem;
+  min-width: 110px;
+  font-size: 0.97rem;
+  font-family: inherit;
+}
+.pro-electro-dropdown-menu li {
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.13s;
+}
+.pro-electro-dropdown-menu li:last-child {
+  border-bottom: none;
+}
+.pro-electro-dropdown-menu li:hover {
+  color: #408de4;
+}
+.pro-electro-menu-icon {
+  font-size: 1.3rem;
+  color: #408de4;
+  cursor: pointer;
+  margin-left: 0.4rem;
+  transition: color 0.15s;
+}
+.pro-electro-menu-icon:hover {
+  color: #ffe066;
+}
+}
+@media (max-width: 800px) {
+  .pro-electro-navbar-search {
+    display: none;
+  }
+  .pro-electro-navbar-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 80%;
+    background: #fff;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem 1rem;
+    transition: transform 0.3s;
+    transform: translateX(100%);
+    margin-top: 0px;
+    box-shadow: -2px 0 8px #e0e0e0;
+  }
+  .pro-electro-navbar-links.active {
+    transform: translateX(0);
+  }
+  .pro-electro-navbar-links > li {
+    margin: 14px 0;
+  }
+  .pro-electro-menu-icon {
+    font-size: 1.5rem;
+    margin-left: 0;
+  }
+  .pro-electro-mobile-search-item {
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+  .pro-electro-mobile-search {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+  .pro-electro-mobile-search-input {
+    flex: 1;
+    padding: 0.55rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.98rem;
+    background: #f7f7f7;
+    color: #232a3a;
+  }
+  .pro-electro-mobile-search-button {
+    padding: 0.55rem 1rem;
+    background: #408de4;
+    color: #232a3a;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 0.98rem;
+    transition: background 0.18s;
+  }
+  .pro-electro-mobile-search-button:hover {
+    background: #ffe066;
+    color: #232a3a;
+  }
+}
+@media (max-width: 550px) {
+  .pro-electro-navbar-logo a {
+    font-size: 1rem;
+  }
+  .pro-electro-logo-image {
+    height: 22px;
+  }
+  .pro-electro-logo-text {
+    font-size: 1rem;
+  }
+  .pro-electro-menu-icon {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 430px) {
+  .pro-electro-menu-icon {
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 360px) {
+  .pro-electro-menu-icon {
+    font-size: 0.8rem;
+  }
+}

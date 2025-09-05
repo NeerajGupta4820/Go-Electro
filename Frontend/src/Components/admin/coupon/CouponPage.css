@@ -1,0 +1,65 @@
+.coupon-page {
+    padding: 20px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 0px 10px 2px silver;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    box-sizing: content-box;
+}
+.coupon-page thead{
+    background-color: #45a049;
+    color: white;
+    height: 50px;
+}
+.coupon-table, .product-table-scrollable table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.coupon-table th, .coupon-table td, .product-table-scrollable th, .product-table-scrollable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.coupon-form {
+    margin-top: 20px;
+}
+
+.product-selection {
+    margin-top: 15px;
+}
+
+.product-table-scrollable {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+.product-table-scrollable img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.product-table-image {
+    width: 60px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}

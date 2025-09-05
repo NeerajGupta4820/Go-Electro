@@ -1,0 +1,49 @@
+.admin-dashboard {
+  display: flex;
+  flex-direction: row;
+  height: 90vh; 
+}
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  overflow-y: auto; 
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  scrollbar-width: none;
+}
+
+.dashboard-content::-webkit-scrollbar {
+  display: none; 
+}
+.content-section {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100%; 
+  overflow-y: auto; 
+}
+.content-section p{
+  color: black;
+}
+.content-section::-webkit-scrollbar {
+  display: none; 
+}
+.content-section {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}
+
+.dashboard-main-header {
+  display: flex;
+  justify-content: center;
+  height: 4rem;
+  background-color: #3470b4;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: white;
+}

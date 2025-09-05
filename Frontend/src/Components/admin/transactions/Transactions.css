@@ -1,0 +1,240 @@
+.Transactions-orders {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  height: max-content;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.Transactions-orders h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.Transactions-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.Transactions-orders-table th,
+.Transactions-orders-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #8b8b8b;
+}
+
+.Transactions-orders-table th {
+  color: white;
+  background-color: #28a745;
+}
+
+.Transactions-order-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.Transactions-order-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.Transactions-view-order-details {
+  color: #007bff;
+  background-color: white;
+  text-decoration: none;
+}
+
+.Transactions-view-order-details:hover {
+  text-decoration: underline;
+  background-color: white;
+}
+
+.Transaction-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.Transaction-popup-content {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #007bff;
+}
+.close-button:hover{
+  background-color: #0056b3;
+}
+
+.status-update {
+  margin-top: 20px;
+}
+
+.status-update select {
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.change-status-button {
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.change-status-button:hover {
+  background-color: #0056b3;
+}
+@media (max-width: 1024px) {
+  .Transactions-orders h2 {
+    font-size: 1.3rem;
+  }
+
+  .Transactions-orders-table th,
+  .Transactions-orders-table td {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .Transactions-order-item{
+    display: flex;
+    flex-direction: column;
+  }
+  .Transactions-order-item img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Transactions-orders h2 {
+    font-size: 1.2rem;
+  }
+
+  .Transactions-orders-table th,
+  .Transactions-orders-table td {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .Transactions-order-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .Transactions-order-item img {
+    width: 40px;
+    height: 40px;
+  }
+  .Transactions-order-item span {
+    /* margin-top: 5px; */
+    font-size: 0.85rem;
+  }
+  .Transactions-view-order-details{
+    font-size: 0.8rem;
+  }
+  .Transaction-popup-content {
+    width: 90%;
+  }
+
+  .status-update select,
+  .change-status-button {
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 600px) {
+  .Transactions-orders h2 {
+    font-size: 1.2rem;
+  }
+
+  .Transactions-orders-table th,
+  .Transactions-orders-table td {
+    font-size: 0.6rem;
+    padding: 2px;
+  }
+
+  .Transactions-order-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .Transactions-order-item img {
+    width: 40px;
+    height: 40px;
+  }
+  .Transactions-order-item span {
+    /* margin-top: 5px; */
+    font-size: 0.6rem;
+  }
+  .Transactions-view-order-details{
+    font-size: 0.8rem;
+  }
+  .Transaction-popup-content {
+    width: 90%;
+  }
+
+  .status-update select,
+  .change-status-button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .Transactions-orders h2 {
+    font-size: 1rem;
+  }
+
+  .Transactions-orders-table th,
+  .Transactions-orders-table td {
+    font-size: 0.6rem;
+    padding: 2px;
+  }
+
+  .Transactions-order-item img {
+    width: 35px;
+    height: 35px;
+  }
+  .Transactions-order-item span{
+    font-size: 0.6rem;
+  }
+  .Transaction-popup-content {
+    width: 100%;
+    padding: 15px;
+  }
+  .Transactions-view-order-details{
+    font-size: 0.6rem;
+  }
+  .status-update select,
+  .change-status-button {
+    font-size: 0.85rem;
+  }
+}

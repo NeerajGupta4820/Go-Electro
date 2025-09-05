@@ -1,0 +1,45 @@
+.coin-toss-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.coin-toss-content {
+  text-align: center;
+}
+
+.coin {
+  width: 100px;
+  height: 100px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.coin-side {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.heads {
+  background-image: url("../../../assets/Images/toss/heads.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.tails {
+  background-image: url("../../../assets/Images/toss/tails.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: rotateY(180deg);
+}

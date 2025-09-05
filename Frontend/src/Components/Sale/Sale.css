@@ -1,0 +1,87 @@
+.sell-container {
+  padding: 20px;
+  text-align: center;
+}
+.sell-container h2 {
+  font-size: 1.6rem;
+  color: #23272f;
+  font-weight: 600;
+  font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+  letter-spacing: 0.2px;
+  margin-bottom: 1.1rem;
+}
+.collage-grid {
+  background-color: #23272f;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+.sale-item {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.sale-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.sale-item.large {
+  grid-column: span 2;
+  grid-row: span 2; 
+}
+.sale-item.small {
+  grid-column: span 1; 
+  grid-row: span 1;
+}
+.sale-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.sale-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+.sale-modal-content h2 {
+  margin-bottom: 10px;
+  color: black;
+}
+.sale-modal-content p {
+  margin-bottom: 20px;
+  color: black;
+}
+.sale-modal-image-small{
+  width: max-content;
+  max-width: 280px;
+  max-height: 350px;
+  height: max-content;
+  object-fit: cover;  
+}
+.close-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.close-button:hover {
+  background-color: #555;
+}

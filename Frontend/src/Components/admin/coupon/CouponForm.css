@@ -1,0 +1,45 @@
+.coupon-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+}
+
+.product-selection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-selection table {
+    width: 80%;
+    border-collapse: collapse; 
+}
+
+.product-selection thead {
+    position: sticky; 
+    top: 0;
+    background-color: #fff; 
+    z-index: 1; 
+    width: 80%;
+}
+
+.product-selection tbody {
+    display: block;
+    max-height: 300px; 
+    overflow-y: scroll; 
+}
+
+.product-selection tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed; 
+}
+
+.product-selection th, 
+.product-selection td {
+    padding: 10px;
+    text-align: left;
+}
