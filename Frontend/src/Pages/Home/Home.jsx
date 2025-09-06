@@ -8,6 +8,7 @@ import UpcomingProducts from "../../Components/upcomingProducts/UpcomingProducts
 import { useFetchAllCategoriesQuery } from "../../redux/api/categoryAPI";
 import "./Home.css";
 import CategoriesProducts from "../../Components/HomeProductComponent/CategoriesProducts";
+import StickyCategoriesBar from "../../Components/Navbar/StickyCategoriesBar";
 
 const Home = () => {
   const [email, setEmail] = useState("");
@@ -77,6 +78,12 @@ const Home = () => {
   return (
     <div>
       <Header />
+      {/* Sticky categories bar below navbar only when scrolled past categories-section */}
+      <StickyCategoriesBar
+        categories={categories}
+        onCategoryClick={handleCategory}
+        visible={showStickyBar}
+      />
       <div className="categories-section" ref={categoriesSectionRef}>
         <h2>Shop by Categories</h2>
         {isCategoryLoading ? (

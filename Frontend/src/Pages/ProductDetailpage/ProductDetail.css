@@ -1,3 +1,82 @@
+.product-detail-left {
+  position: relative;
+}
+.product-stock-corner {
+  position: absolute;
+  top: -30px;
+  right: 18px;
+  z-index: 2;
+}
+.product-stock.instock {
+  background: #28a745;
+  color: #fff;
+  padding: 6px 18px;
+  border-radius: 15px 0px 15px 0;
+  font-weight: 600;
+  display: block;
+  width: 5rem;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.product-stock.outstock {
+  background: #bdbdbd;
+  color: #fff;
+  padding: 6px 18px;
+  border-radius: 15px 0px 15px 0;
+  font-weight: 600;
+  display: block;
+  width: 5rem;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.star {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
+  width: 22px;
+  height: 22px;
+}
+.star.filled svg {
+  fill: #ffc107;
+  stroke: #ffc107;
+}
+.star.empty svg {
+  fill: #fff;
+  stroke: #ffc107;
+}
+.star.partial svg {
+  stroke: #ffc107;
+}
+
+/* Header row for product title and compare button */
+.product-detail-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Compare button states */
+.compare-btn-detail {
+  background: #408de4;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 1rem;
+  transition: background 0.18s;
+}
+.compare-btn-detail.active {
+  background: #dc3545;
+  color: #fff;
+}
+.compare-btn-detail.active:hover {
+  background: #a71d2a;
+  color: #fff;
+}
 .product-detail-container {
   display: flex;
   flex-direction: column;
@@ -8,10 +87,14 @@
   display: flex;
   padding: 3rem;
   flex-direction: row;
-  gap: 100px;
+  gap: 2rem;
+  padding-right: 5rem;
+  border-bottom: 2px solid #e0e0e0;
 }
 .product-detail-left {
   display: flex;
+  padding-right: 5rem;
+  border-right: 2px solid #e0e0e0;
 }
 .product-thumbnails {
   display: flex;
@@ -37,6 +120,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* margin-right: 0; */
 }
 .main-image {
     max-height: 25rem;
@@ -59,7 +143,19 @@
 .product-detail-info::-webkit-scrollbar {
   display: none; 
 }
-
+.product-price-row{
+  margin-bottom: 1rem;
+}
+.product-price-label{
+  color: #dc3545;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.product-price-value{
+  color: #dc3545;
+  font-size: 1..2rem;
+  font-weight: 600;
+}
 .color-options {
   margin-top: 20px;
 }
@@ -76,6 +172,7 @@
   border-color: #007bff;
 }
 .product-detail-info h1 {
+  color: rgb(90, 90, 90);
   margin-bottom: 10px;
 }
 .product-detail-info h2 {
@@ -86,21 +183,69 @@
     font-size: 1.3rem;
 }
 .product-detail-info p{
-    color: black;
+  color: black;
+}
+.product-rating-row{
+  margin: 1rem 0;
+}
+.product-description{
+  color: gray;
 }
 .toggle-description-btn {
-  background-color: #007bff;
-  color: white;
+  background: #408de4;
+  color: #fff;
   border: none;
-  margin-top: 10px;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  transition: background 0.18s;
 }
-
 .toggle-description-btn:hover {
-  background-color: #0056b3;
+  background: #2862a5;
+  color: #fff;
+}
+.toggle-description-btn.active {
+  background: #dc3545;
+  color: #fff;
+}
+.toggle-description-btn.active:hover {
+  background: #a71d2a;
+  color: #fff;
+}
+.compare-btn-detail {
+  background: #408de4;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 1rem;
+  .toggle-description-btn {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.18s;
+  }
+  .toggle-description-btn:hover {
+    background: #232a3a;
+    color: #ffe066;
+  }
+  transition: background 0.18s;
+}
+.compare-btn-detail:hover {
+  background: #2862a5;
+  color: #232a3a;
 }
 @media (max-width: 768px) {
   .product-detail-main {

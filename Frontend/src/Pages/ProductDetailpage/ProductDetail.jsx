@@ -2,7 +2,8 @@ import { useState, useEffect,useRef } from "react";
 import { FaShoppingCart} from 'react-icons/fa';
 import { useParams } from "react-router-dom";
 import { addToCart } from "../../redux/slices/cartSlice";
-import { useDispatch } from "react-redux";
+import { addToCompare, removeFromCompare } from '../../redux/slices/compareSlice';
+import { useDispatch, useSelector } from "react-redux";
 import { useGetProductByIdQuery, useGetRelatedProductsQuery } from "../../redux/api/productAPI";
 import { toast } from "react-toastify";
 import Loader from "../../Components/Loader/Loader";
@@ -30,6 +31,18 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
 
+
+  // All hooks must be called before any return
+  const compareProducts = useSelector(state => state.compare.products);
+  const [compareBtnState, setCompareBtnState] = useState('add');
+  useEffect(() => {
+    if (product && compareProducts.some(p => p._id === product._id)) {
+      setCompareBtnState('remove');
+    } else {
+      setCompareBtnState('add');
+    }
+  }, [product, compareProducts]);
+
   useEffect(() => {
     if (product && product.images.length > 0) {
       setSelectedColor(product.images[0].color);
@@ -37,10 +50,14 @@ const ProductDetail = () => {
     }
   }, [product]);
 
+  // Early returns (no hooks below this)
   if (isLoading || relatedLoading) return <Loader />;
   if (isError || !product) return <p>Product not found</p>;
 
+  // Compute values after hooks and early returns
   const imagesToDisplay = product.images.filter((image) => image.color === selectedColor);
+  const shortDescription = product.description.split(" ").slice(0, 100).join(" ") + "...";
+  const isCompared = compareProducts.some(p => p._id === product._id);
 
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
@@ -57,20 +74,29 @@ const ProductDetail = () => {
       theme:"dark",
     })
     setIsAdded(true);
-    
     setTimeout(() => {
       setButtonColor('#rgb(247, 139, 90)'); 
       setIsAdded(false);
     }, 1500); 
   };
 
-
-  const shortDescription = product.description.split(" ").slice(0, 100).join(" ") + "...";
+  const handleCompareClick = () => {
+    if (isCompared) {
+      dispatch(removeFromCompare(product._id));
+      setCompareBtnState('add');
+    } else {
+      dispatch(addToCompare(product));
+      setCompareBtnState('remove');
+    }
+  };
 
   return (
     <div className="product-detail-container">
       <div className="product-detail-main">
         <div className="product-detail-left">
+          <div className="product-stock-corner">
+            <p className={`product-stock ${product.stock > 0 ? 'instock' : 'outstock'}`}>{product.stock > 0 ? "In Stock" : "Out of Stock"}</p>
+          </div>
           <div className="product-thumbnails">
             {imagesToDisplay.length > 0 &&
               imagesToDisplay[0].imageLinks.map((imgUrl, index) => (
@@ -93,52 +119,92 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-
+        <div className="product-detail-divider" />
         <div className="product-detail-info">
-          <h1>{product.title}</h1>
-          <h2>Price: <span> Rs.{product.price}</span></h2>
-          <p>{product.stock > 0 ? "In Stock" : "Out of Stock"}</p>
-          {
-          product.stock>0 ?
-          <button 
-          className={`add-to-cart ${isAdded ? 'added' : ''}`} 
-          onClick={handleAddToCart}
-          style={{ backgroundColor: buttonColor }} >
-          <FaShoppingCart className={`cart-icon ${isAdded ? 'move' : ''}`} />
-          {isAdded ? 'Added' : 'Add to Cart'}
-          </button>:
-          <button className="notcart-icon" disabled>
-            <FaShoppingCart/>Add to Cart
-          </button>
-        }
-          <p>Rating: {product.ratings}</p>
-          <p>Category: {product.category?.name}</p>
-          {
-            product.images.length>1?
-            <div className="color-options">
-            <h3>Colors:</h3>
-            {product.images.map((image, index) => (
-              <button
-                key={index}
-                className={`color-option ${selectedColor === image.color ? "active" : ""}`}
-                onClick={() => {
-                  setSelectedColor(image.color);
-                  setSelectedImage(image.imageLinks[0]);
-                }}
-                style={{ backgroundColor: image.color }}
-              />
-            ))}
-          </div>:
-            ""
-          }
-          <div
-  dangerouslySetInnerHTML={{
-    __html: showFullDescription ? product.description : shortDescription,
-  }}
-></div>
+          <div className="product-detail-header-row">
+            <h1>{product.title}</h1>
+            <button
+              className={`compare-btn-detail ${isCompared ? 'active' : ''}`}
+              onClick={handleCompareClick}
+            >
+              Compare
+            </button>
+          </div>
+          <div className="product-price-row">
+            <span className="product-price-label">Price:</span>
+            <span className="product-price-value">Rs.{product.price}</span>
+          </div>
+          {product.stock > 0 ? (
+            <button 
+              className={`add-to-cart ${isAdded ? 'added' : ''}`} 
+              onClick={handleAddToCart}
+              style={{ backgroundColor: buttonColor }} >
+              <FaShoppingCart className={`cart-icon ${isAdded ? 'move' : ''}`} />
+              {isAdded ? 'Added' : 'Add to Cart'}
+            </button>
+          ) : (
+            <button className="notcart-icon" disabled>
+              <FaShoppingCart/>Add to Cart
+            </button>
+          )}
+          <div className="product-rating-row">
+            <span className="product-rating-stars">
+              {(() => {
+                const stars = [];
+                const rating = Number(product.ratings) || 0;
+                for (let i = 1; i <= 5; i++) {
+                  if (rating >= i) {
+                    stars.push(<span key={i} className="star filled"><svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffc107" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>);
+                  } else if (rating > i - 1) {
+                    // Partial fill for half/decimal
+                    const percent = Math.round((rating - (i - 1)) * 100);
+                    stars.push(
+                      <span key={i} className="star partial">
+                        <svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="#ffc107" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <defs>
+                            <linearGradient id={`starGrad${i}`} x1="0" y1="0" x2="100%" y2="0">
+                              <stop offset={`${percent}%`} stopColor="#ffc107" />
+                              <stop offset={`${percent}%`} stopColor="#fff" />
+                            </linearGradient>
+                          </defs>
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill={`url(#starGrad${i})`} />
+                        </svg>
+                      </span>
+                    );
+                  } else {
+                    stars.push(<span key={i} className="star empty"><svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="#fff" stroke="#ffc107" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>);
+                  }
+                }
+                return stars;
+              })()}
+            </span>
+          </div>
 
-          <button onClick={toggleDescription} className="toggle-description-btn">
-            {showFullDescription ? "Show Less" : "Show More"}
+          {product.images.length > 1 ? (
+            <div className="color-options">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  className={`color-option ${selectedColor === image.color ? "active" : ""}`}
+                  onClick={() => {
+                    setSelectedColor(image.color);
+                    setSelectedImage(image.imageLinks[0]);
+                  }}
+                  style={{ backgroundColor: image.color, borderColor: selectedColor === image.color ? '#232a3a' : '#eee' }}
+                />
+              ))}
+            </div>
+          ) : ""}
+          <div className="product-description">
+            {showFullDescription
+              ? product.description
+              : product.description.split(" ").slice(0, 50).join(" ") + "..."}
+          </div>
+          <button
+            onClick={toggleDescription}
+            className={`toggle-description-btn${showFullDescription ? ' active' : ''}`}
+          >
+            {showFullDescription ? "Show Less" : "Read More"}
           </button>
         </div>
       </div>

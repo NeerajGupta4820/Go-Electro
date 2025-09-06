@@ -11,6 +11,7 @@ import cartApi from './api/cartAPI.js';
 import orderApi from './api/orderAPI.js';
 import couponAPI from './api/couponAPI.js';
 import chartApi from './api/chartAPI.js';
+import compareReducer from './slices/compareSlice.js';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     product: productReducer,
     category: categoryReducer,
     cart: cartReducer,
+    compare: compareReducer,
     [userApi.reducerPath]: userApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,

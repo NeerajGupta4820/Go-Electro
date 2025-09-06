@@ -30,9 +30,9 @@
   margin-left: 1rem;
 }
 
-.slider-main {
+/* .slider-main {
   position: relative;
-}
+} */
 
 .slider-container {
   display: flex;
@@ -40,6 +40,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  width: 95vw;
 }
 
 .slider-track {

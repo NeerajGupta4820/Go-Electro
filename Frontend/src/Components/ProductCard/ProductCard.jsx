@@ -79,7 +79,7 @@ const ProductCard = ({ product }) => {
             i < product.ratings ? (
               <FaStar key={i} className="active" />
             ) : (
-              <FaRegStar key={i} className="inactive" />
+              <FaRegStar key={i} className="inactive" style={{ color: "#ffc107" }} />
             )
           )}
         </div>
