@@ -115,7 +115,7 @@
 
 .filter-popup-content {
   background: white;
-  padding: 2rem;
+  padding: 4rem;
   border-radius: 8px;
   max-width: 400px;
   width: 90%;
@@ -123,17 +123,6 @@
   overflow-y: auto;
 }
 
-.close-popup {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
 .price-display {
   margin: 1rem 0;

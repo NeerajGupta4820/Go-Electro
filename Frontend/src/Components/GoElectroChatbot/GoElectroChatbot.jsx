@@ -1,4 +1,6 @@
+// chatbot.jsx
 import React, { useState, useRef } from 'react';
+import { FaComment, FaTimes, FaExpand, FaCompress, FaPaperPlane } from 'react-icons/fa';
 import './GoElectroChatbot.css';
 
 const GoElectroChatbot = () => {
@@ -74,15 +76,22 @@ const GoElectroChatbot = () => {
             title={enlarged ? 'Shrink' : 'Enlarge'}
             onClick={() => setEnlarged(e => !e)}
           >
-            {enlarged ? <span style={{fontSize:'1.2em'}}>⤢</span> : <span style={{fontSize:'1.2em'}}>⤡</span>}
+            {enlarged ? <FaCompress /> : <FaExpand />}
           </button>
           <div className="goelectro-chatbot-header">
-            ElectroBuddy
-            <button className="goelectro-chatbot-close" onClick={() => setIsOpen(false)}>&times;</button>
+            <div className="goelectro-chatbot-title">
+              <FaComment style={{marginRight: '10px'}} />
+              ElectroBuddy
+            </div>
+            <button className="goelectro-chatbot-close" onClick={() => setIsOpen(false)}>
+              <FaTimes />
+            </button>
           </div>
           <div className="goelectro-chatbot-messages">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`goelectro-chatbot-message ${msg.sender}`}>{msg.text}</div>
+              <div key={idx} className={`goelectro-chatbot-message ${msg.sender}`}>
+                {msg.text}
+              </div>
             ))}
           </div>
           <div className="goelectro-chatbot-input-row">
@@ -94,12 +103,14 @@ const GoElectroChatbot = () => {
               className="goelectro-chatbot-input"
               onKeyDown={e => e.key === 'Enter' && handleSend()}
             />
-            <button className="goelectro-chatbot-send" onClick={handleSend}>Send</button>
+            <button className="goelectro-chatbot-send" onClick={handleSend}>
+              <FaPaperPlane />
+            </button>
           </div>
         </div>
       ) : (
         <button className="goelectro-chatbot-toggle" onClick={() => setIsOpen(true)}>
-          ElectroBuddy
+          <FaComment size={24} />
         </button>
       )}
     </div>

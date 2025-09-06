@@ -1,4 +1,6 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { FaSignOutAlt, FaHome } from "react-icons/fa";
 import Stopwatch from "../../Components/admin/Apps/StopWatch";
 // import CoinToss from "../../Components/admin/Apps/Toss";
 import Categories from "../../Components/admin/category/Categories";
@@ -13,16 +15,37 @@ import { HiMenuAlt4 } from "react-icons/hi";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch({ type: 'user/logout' });
+    navigate('/login');
+  };
+  const handleGoHome = () => {
+    navigate('/');
+  };
+  const handleExitDashboard = () => {
+    navigate('/');
+  };
   return (
     <>
-      <header className="dashboard-main-header">
-        <button id="hamburger">
-          <HiMenuAlt4 />
-        </button>
-        <h2>Admin Dashboard</h2>
+      <header className="dashboard-main-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem', background: '#fff', borderBottom: '1px solid #eee' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button onClick={handleGoHome} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '2rem', color: '#408de4' }} title="Go to Home">
+            <FaHome />
+          </button>
+          <h2 style={{ margin: 0 }}>Admin Dashboard</h2>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button onClick={handleExitDashboard} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.7rem', color: '#dc3545' }} title="Exit Dashboard">
+            <HiMenuAlt4 />
+          </button>
+          <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.7rem', color: '#dc3545' }} title="Logout">
+            <FaSignOutAlt />
+          </button>
+        </div>
       </header>
       <div className="admin-dashboard">
-        {/* Header section */}
         <AdminSidebar />
         <main className="dashboard-content">
           <Routes>

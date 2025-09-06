@@ -44,11 +44,12 @@ const AppContent = () => {
     return children;
   };
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
   return (
     <>
       <ScrollToTop />
-      <Navbar />
-      {showStickyBar && !isCategoryLoading && !isCategoryError && categories.length > 0 && (
+      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && showStickyBar && !isCategoryLoading && !isCategoryError && categories.length > 0 && (
         <StickyCategoriesBar
           categories={categories}
           onCategoryClick={handleCategoryClick}
@@ -71,18 +72,20 @@ const AppContent = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/compare" element={<CompareProducts />} />
       </Routes>
-  <Footer />
-  <GoElectroChatbot />
+      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <GoElectroChatbot />}
     </>
   );
 };
 
 const App = () => {
   // Router is now in main.jsx, so just render AppContent
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
   return (
     <>
       <AppContent />
-      <CompareStrip />
+      {!isAdminRoute && <CompareStrip />}
     </>
   );
 };

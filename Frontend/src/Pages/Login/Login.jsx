@@ -136,7 +136,7 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" disabled={isLoggingIn}>
+          <button type="submit" className="login-btn" disabled={isLoggingIn}>
             {isLoggingIn ? "Logging in..." : "Login"}
           </button>
           <button className="google-login" onClick={handleGoogleLogin} type="button" disabled={isGoogleLoggingIn}>

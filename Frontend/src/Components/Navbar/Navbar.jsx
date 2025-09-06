@@ -10,6 +10,7 @@ import { FaBars } from "react-icons/fa6";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import Pill from "../Pill/Pill";
+import logo from "../../assets/Images/Logo/Logo.webp";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -97,7 +98,7 @@ const Navbar = () => {
       <div className="navbar-container pro-electro-navbar-container">
         <div className="navbar-logo pro-electro-navbar-logo">
           <Link to="/">
-            <img src="/src/assets/Images/Logo/GoElectroLogoNew.svg" alt="GoElectro" className="logo-image pro-electro-logo-image" />
+            <img src={logo} alt="GoElectro" className="logo-image pro-electro-logo-image" />
           </Link>
         </div>
 

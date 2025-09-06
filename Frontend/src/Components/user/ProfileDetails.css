@@ -1,3 +1,51 @@
+/* Social Share Icons Styling */
+.share-modal-socials button {
+  border: none;
+  background: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: none;
+}
+
+/* WhatsApp Icon */
+.share-modal-socials button:nth-child(2) svg {
+  color: #25D366;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.15);
+}
+
+/* Facebook Icon */
+.share-modal-socials button:nth-child(1) svg {
+  color: #1877F3;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(24, 119, 243, 0.15);
+}
+
+/* Gmail Icon */
+.share-modal-socials button:nth-child(3) svg {
+  color: #EA4335;
+  background: #fff;
+  /* border-radius: 50%; */
+  box-shadow: 0 2px 8px rgba(234, 67, 53, 0.15);
+}
+
+/* Telegram Icon */
+.share-modal-socials button:nth-child(4) svg {
+  color: #0088cc;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 136, 204, 0.15);
+}
+
+/* Remove hover effect for social buttons */
+.share-modal-socials button:hover {
+  background: none;
+  color: inherit;
+}
 /* Page Container */
 .profile-page {
   display: flex;

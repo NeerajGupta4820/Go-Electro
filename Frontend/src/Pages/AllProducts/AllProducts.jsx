@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Range } from "react-range";
+import { FaTimes } from 'react-icons/fa';
 import "./allProducts.css";
 import { useGetAllProductsQuery } from "../../redux/api/productAPI";
 import ProductCard from "../../Components/ProductCard/ProductCard";
@@ -324,7 +325,7 @@ const AllProducts = () => {
           <div className="filter-popup">
             <div className="filter-popup-content">
               <button className="close-popup" onClick={toggleFilterPopup}>
-                Close
+                <FaTimes/>
               </button>
               <h3>Price Range</h3>
               <Range

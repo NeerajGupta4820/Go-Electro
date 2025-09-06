@@ -43,9 +43,9 @@ h2 {
   border-radius: 4px;
   padding: 0px;
 }
-button {
+.login-btn {
   padding: 0.5rem 1rem;
-  background-color: rgb(252, 124, 64);
+  background-color: #408de4;
   color: white;
   border: none;
   border-radius: 4px;
@@ -53,8 +53,8 @@ button {
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
-button:hover {
-  background-color: rgb(247, 139, 90);
+.login-btn:hover {
+  background-color: #2862a5;
 }
 .google-login {
   display: flex; 

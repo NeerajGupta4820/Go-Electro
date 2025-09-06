@@ -219,23 +219,25 @@
 }
 .filter-popup-content {
   background: #fff;
-  padding: 20px;
-  width: 30rem;
+  padding: 10rem 5rem;
+  min-width: 20rem;
   height: 20rem;
   border-radius: 8px;
   position: relative;
 }
 .close-popup {
   position: absolute;
-  top: 10px;
+  top: 3rem;
   right: 10px;
   border: none;
-  background-color: #007bff;
   font-size: 15px;
+  color: #dc3545;
+  background: none;
   cursor: pointer;
 }
 .close-popup:hover{
-    background-color: #03478f;
+  color: #a71d2a;
+  background: none;
 }
 .filter-content {
   display: flex;

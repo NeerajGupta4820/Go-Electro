@@ -1,5 +1,15 @@
-import { useState, useEffect,useRef } from "react";
-import { FaShoppingCart} from 'react-icons/fa';
+import { useState, useEffect, useRef } from "react";
+import { 
+  FaShoppingCart, 
+  FaShareAlt, 
+  FaFacebook, 
+  FaWhatsapp, 
+  FaLink,
+  FaTimes,
+  FaInstagram
+} from 'react-icons/fa';
+import { SiGmail } from 'react-icons/si';
+import { FaTelegram } from 'react-icons/fa';
 import { useParams } from "react-router-dom";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { addToCompare, removeFromCompare } from '../../redux/slices/compareSlice';
@@ -15,7 +25,6 @@ const ProductDetail = () => {
   
   const { id } = useParams();
   const { data, isLoading, isError } = useGetProductByIdQuery(id);
-  console.log(data)
   const dispatch = useDispatch();
   const [isAdded, setIsAdded] = useState(false);
   const [buttonColor, setButtonColor] = useState('#rgb(247, 139, 90)'); 
@@ -30,7 +39,52 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
-
+  const [showShareModal, setShowShareModal] = useState(false);
+  
+  const handleShareClick = () => {
+    setShowShareModal(true);
+  };
+  
+  const closeShareModal = () => {
+    setShowShareModal(false);
+  };
+  
+  const shareProduct = (platform) => {
+    const productUrl = window.location.href;
+    const shareText = `Check out ${product.title} on our store!`;
+    let shareUrl = '';
+    switch(platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+        break;
+      case 'telegram':
+        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(shareText)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + productUrl)}`;
+        break;
+      case 'instagram':
+        shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`;
+        break;
+      case 'gmail':
+        shareUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent(product.title)}&body=${encodeURIComponent(shareText + ' ' + productUrl)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(productUrl)
+          .then(() => {
+            toast.success("Link copied to clipboard!");
+            setShowShareModal(false);
+          })
+          .catch(err => {
+            toast.error("Failed to copy link");
+          });
+        return;
+      default:
+        return;
+    }
+    window.open(shareUrl, '_blank');
+    setShowShareModal(false);
+  };
 
   // All hooks must be called before any return
   const compareProducts = useSelector(state => state.compare.products);
@@ -123,12 +177,20 @@ const ProductDetail = () => {
         <div className="product-detail-info">
           <div className="product-detail-header-row">
             <h1>{product.title}</h1>
-            <button
-              className={`compare-btn-detail ${isCompared ? 'active' : ''}`}
-              onClick={handleCompareClick}
-            >
-              Compare
-            </button>
+            <div className="product-header-actions">
+              <button 
+                className="share-btn-detail"
+                onClick={handleShareClick}
+              >
+                <FaShareAlt /> Share
+              </button>
+              <button
+                className={`compare-btn-detail ${isCompared ? 'active' : ''}`}
+                onClick={handleCompareClick}
+              >
+                Compare
+              </button>
+            </div>
           </div>
           <div className="product-price-row">
             <span className="product-price-label">Price:</span>
@@ -208,6 +270,72 @@ const ProductDetail = () => {
           </button>
         </div>
       </div>
+      
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="share-modal-overlay" onClick={closeShareModal}>
+          <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="share-modal-cancel" onClick={closeShareModal}>
+              <FaTimes />
+            </button>
+            <div className="share-modal-content">
+              <h2 className="share-modal-title">Share this product</h2>
+              {selectedImage && (
+                <img src={selectedImage} alt={product.title} className="share-modal-image" />
+              )}
+              <p className="share-modal-product-name">{product.title}</p>
+              <div className="share-modal-link-row">
+                <input 
+                  type="text" 
+                  value={window.location.href} 
+                  readOnly 
+                  className="share-modal-link" 
+                />
+                <button 
+                  className="share-modal-copy"
+                  onClick={() => shareProduct('copy')}
+                >
+                  <FaLink /> Copy
+                </button>
+              </div>
+              <div className="share-modal-socials">
+                <button 
+                  onClick={() => shareProduct('facebook')}
+                  aria-label="Share on Facebook"
+                >
+                  <FaFacebook />
+                </button>
+                <button 
+                  onClick={() => shareProduct('whatsapp')}
+                  aria-label="Share on WhatsApp"
+                >
+                  <FaWhatsapp />
+                </button>
+                <button 
+                  onClick={() => shareProduct('gmail')}
+                  aria-label="Share via Gmail"
+                >
+                  <SiGmail />
+                </button>
+                <button 
+                  onClick={() => shareProduct('telegram')}
+                  aria-label="Share on Telegram"
+                >
+                  <FaTelegram />
+                </button>
+                 <button 
+                  className="share-instagram"
+                  onClick={() => shareProduct('instagram')}
+                  aria-label="Share on Instagram"
+                >
+                  <FaInstagram />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <ProductSlider 
         products={relatedProducts} 
         title="Related Products" 

@@ -93,7 +93,7 @@ const ForgotPassword = () => {
               required
             />
           </div>
-          <button type="submit" disabled={isLoading}>
+          <button type="submit" className="forgot-btn" disabled={isLoading}>
             {isLoading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
