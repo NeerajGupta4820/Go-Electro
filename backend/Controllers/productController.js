@@ -43,7 +43,6 @@ const getbyId = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     const { title, description, price, category, brand, images,stock, coupon} = req.body;
-    console.log(req.body);
 
     const categoryExists = await Category.findById(category);
     if (!categoryExists) {

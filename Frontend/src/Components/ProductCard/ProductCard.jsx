@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa";
+import { FaShoppingCart, FaStar, FaRegStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
+import { addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
 import { toast } from "react-toastify";
 import "./ProductCard.css";
 
@@ -12,6 +13,7 @@ const ProductCard = ({ product }) => {
   const [buttonColor, setButtonColor] = useState("#rgb(247, 139, 90)");
   const [isZooming, setIsZooming] = useState(true);
   const navigate = useNavigate();
+  const wishlistProducts = useSelector((state) => state.wishlist.products);
 
   const colors = ["#4dbdd6", "#28a745", "#ffc107", "#dc3545"];
   const currentIndex = useRef(0);
@@ -19,7 +21,7 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     const zoomTimeout = setTimeout(() => {
       setIsZooming(false);
-    }, 10000); 
+    }, 10000);
     return () => clearTimeout(zoomTimeout);
   }, []);
 
@@ -61,6 +63,16 @@ const ProductCard = ({ product }) => {
       ? product.images[0].imageLinks[0]
       : "path/to/placeholder-image.jpg";
 
+  // Wishlist logic
+  const isWishlisted = wishlistProducts.some((p) => p._id === product._id);
+  const handleWishlist = () => {
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(product._id));
+    } else {
+      dispatch(addToWishlist(product._id));
+    }
+  };
+
   return (
     <div className={`product-card ${isZooming ? "zooming" : ""}`}>
       <div className="products-card-img">
@@ -70,6 +82,17 @@ const ProductCard = ({ product }) => {
           alt={product.title}
           className="product-photo"
         />
+        <button
+          className="wishlist-btn"
+          onClick={handleWishlist}
+          style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none' }}
+        >
+          {isWishlisted ? (
+            <FaHeart color="#e74c3c" size={24} />
+          ) : (
+            <FaRegHeart color="#e74c3c" size={24} />
+          )}
+        </button>
       </div>
       <div className="product-card-info">
         <h4 className="product-title">{product.title}</h4>

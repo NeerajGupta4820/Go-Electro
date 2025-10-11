@@ -22,6 +22,7 @@ import { useFetchAllCategoriesQuery } from './redux/api/categoryAPI';
 import CompareStrip from './Components/CompareStrip/CompareStrip';
 import CompareProducts from './Pages/CompareProducts/CompareProducts';
 import GoElectroChatbot from './Components/GoElectroChatbot/GoElectroChatbot';
+import WishlistPage from './Pages/Wishlist/WishlistPage';
 
 const AppContent = () => {
   const location = useLocation();
@@ -71,6 +72,7 @@ const AppContent = () => {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/compare" element={<CompareProducts />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <GoElectroChatbot />}

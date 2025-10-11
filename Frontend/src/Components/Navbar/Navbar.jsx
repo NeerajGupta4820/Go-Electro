@@ -5,7 +5,7 @@ import { clearCart } from "../../redux/slices/cartSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUpdateCartMutation } from "../../redux/api/cartAPI";
-import { FaTimes, FaRegUser } from "react-icons/fa";
+import { FaTimes, FaRegUser, FaHeart } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
@@ -162,6 +162,12 @@ const Navbar = () => {
             </Link>
             {cartItems.length !== 0 && <Pill label={cartItems.length} />}
           </li>
+          <li onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, color: '#e74c3c' }}>
+              <FaHeart style={{ color: '#e74c3c', fontSize: '1.3rem', verticalAlign: 'middle' }} />
+              <span style={{ fontWeight: 500, color: '#e74c3c', fontSize: '1rem' }}>Wishlist</span>
+            </Link>
+          </li>
 
           {!user ? (
             <>
@@ -205,6 +211,16 @@ const Navbar = () => {
                     style={{ cursor: "pointer", padding: "0.5rem", borderBottom: "1px solid #ffd70022" }}
                   >
                     Dashboard
+                  </li>
+                  <li
+                    onClick={() => {
+                      navigate('/wishlist');
+                      setDropdownOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    style={{ cursor: "pointer", padding: "0.5rem", borderBottom: "1px solid #ffd70022", color: '#e74c3c', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}
+                  >
+                    <FaHeart style={{ color: '#e74c3c', fontSize: '1.1rem', verticalAlign: 'middle' }} /> Wishlist
                   </li>
                   <li
                     onClick={() => {

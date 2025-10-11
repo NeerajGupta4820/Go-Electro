@@ -1,0 +1,104 @@
+
+.wishlist-container {
+  padding: 2.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.wishlist-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #232a3a;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+.wishlist-empty {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+.wishlist-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+}
+.wishlist-product-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(35,42,58,0.08);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  position: relative;
+}
+.wishlist-product-card:hover {
+  box-shadow: 0 4px 16px rgba(35,42,58,0.15);
+}
+.wishlist-product-img-wrap {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7f7;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.wishlist-product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.wishlist-product-info {
+  text-align: center;
+}
+.wishlist-product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232a3a;
+  margin-bottom: 0.5rem;
+}
+.wishlist-product-price {
+  color: #e74c3c;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.wishlist-remove-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+.wishlist-remove-btn:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 600px) {
+  .wishlist-container {
+    padding: 1rem 0.2rem;
+  }
+  .wishlist-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .wishlist-products {
+    gap: 1rem;
+  }
+  .wishlist-product-card {
+    padding: 1rem 0.5rem;
+  }
+  .wishlist-product-img-wrap {
+    width: 80px;
+    height: 80px;
+  }
+}

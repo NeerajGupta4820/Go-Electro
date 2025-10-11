@@ -27,6 +27,20 @@
   font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
 }
 
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+.wishlist-btn:hover svg {
+  filter: drop-shadow(0 0 2px #e74c3c);
+}
+}
+
 
 .product-card.zooming {
   animation: zoomEffect 0.7s ease-in-out;

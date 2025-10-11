@@ -57,7 +57,7 @@ const checkLogin = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
 
