@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 import { removeFromCart, updateQuantity, setCartData, clearCart } from "../../redux/slices/cartSlice";
+import { FaBoxOpen } from 'react-icons/fa';
 import "./Cart.css";
 
 const Cart = () => {
@@ -43,7 +44,11 @@ const Cart = () => {
     <div className="cart-container">
       <h2>Your Cart</h2>
       {totalQuantity === 0 ? (
-        <p>Your cart is empty.</p>
+        <div className="cart-empty">
+          <FaBoxOpen className="cart-empty-icon" size={56} />
+          <h3>Your cart is empty</h3>
+          <p>Looks like you have not added anything to your cart yet. Start shopping to add products.</p>
+        </div>
       ) : (
         <div className="cart-content">
           <div className="cart-items">

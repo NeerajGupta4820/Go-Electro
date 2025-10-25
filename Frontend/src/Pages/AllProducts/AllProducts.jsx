@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Range } from "react-range";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaBoxOpen } from 'react-icons/fa';
 import "./allProducts.css";
 import { useGetAllProductsQuery } from "../../redux/api/productAPI";
 import ProductCard from "../../Components/ProductCard/ProductCard";
@@ -49,7 +49,7 @@ const AllProducts = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let updatedProducts = Product;
 
     if (selectedCategories.length > 0) {
@@ -93,11 +93,21 @@ const AllProducts = () => {
     }
 
     setFilteredProducts(updatedProducts);
-  };
+  }, [Product, filters, selectedCategories, priceSortOption, dateSortOption]);
 
   useEffect(() => {
     applyFilters();
-  }, [filters, selectedCategories, Product, priceSortOption, dateSortOption]);
+  }, [applyFilters]);
+
+  // Watch for navigation state changes (e.g., clicking a category in StickyCategoriesBar)
+  useEffect(() => {
+    if (location.state && location.state.category) {
+      // when navigation happens to /allProducts with a category in state, update selectedCategories
+      setSelectedCategories([location.state.category]);
+      // reset pagination to first page
+      setCurrentPage(1);
+    }
+  }, [location.state]);
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategories((prevSelected) =>
@@ -290,12 +300,14 @@ const AllProducts = () => {
             {currentProducts.length === 0 ? (
               <div className="no-product-found">
                 <div className="no-product-content">
-                  <h2>No Product Found</h2>
-                  <p className="status-code">Status: 404</p>
-                  <p className="no-product-message">Sorry, no products match your filters.</p>
-                  <button className="reset-button" onClick={resetFilters}>
-                    Reset Filters
-                  </button>
+                  <FaBoxOpen className="no-product-icon" />
+                  <h2>No products found</h2>
+                  <p className="no-product-message">We could not find any products matching your filters or search.</p>
+                  <div className="no-product-actions">
+                    <button className="reset-button" onClick={resetFilters}>
+                      Reset Filters
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

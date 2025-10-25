@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchWishlist, removeFromWishlist } from '../../redux/slices/wishlistSlice';
 import Loader from '../Loader/Loader';
-import { FaHeartBroken, FaTrashAlt, FaBoxOpen } from 'react-icons/fa';
+import { FaHeartBroken, FaBoxOpen,FaHeart } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import './WishlistCard.css';
 
 const Wishlist = () => {
@@ -17,7 +19,21 @@ const Wishlist = () => {
   }, [dispatch, user.token]);
 
   const handleRemove = (productId) => {
-    dispatch(removeFromWishlist(productId));
+    dispatch(removeFromWishlist(productId)).unwrap()
+      .then(() => {
+        toast.info('Removed from wishlist', { position: 'top-center', autoClose: 1200, hideProgressBar: true, theme: 'dark' });
+      })
+      .catch((err) => {
+        toast.error(err?.message || 'Failed to remove', { position: 'top-center', autoClose: 1500, hideProgressBar: true, theme: 'dark' });
+      });
+  };
+
+  const navigate = useNavigate();
+
+  const handleView = (id) => {
+    if (!id) return;
+    navigate(`/product/${id}`);
+    window.scrollTo(0, 0);
   };
 
   if (loading) return <Loader />;
@@ -33,23 +49,34 @@ const Wishlist = () => {
           <p>No products in your wishlist yet.</p>
         </div>
       ) : (
-        <div className="wishlist-products">
-          {products.map((product) => (
-            <div key={product._id} className="wishlist-product-card">
-              <div className="wishlist-product-img-wrap">
-                <img src={product.images?.[0]?.imageLinks?.[0] || product.image || '/placeholder.jpg'} alt={product.name || product.title} />
+        <div className="wishlist-grid">
+          {products.map((productOrId) => {
+            const product = typeof productOrId === 'string' ? { _id: productOrId, title: 'Product', price: null, images: [] } : productOrId || {};
+            const img = product.images?.[0]?.imageLinks?.[0] || product.image || '/placeholder.jpg';
+            return (
+              <div className="wishlist-card-modern image-only" key={product._id}>
+                <div
+                  className="wc-image clickable"
+                  onClick={() => handleView(product._id)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <img src={img} alt={product.name || product.title || 'Product'} />
+                  <button
+                    className="wc-heart-btn"
+                    onClick={(e) => { e.stopPropagation(); handleRemove(product._id); }}
+                    aria-label="Remove from wishlist"
+                  >
+                    <FaHeart />
+                  </button>
+                  <div className="wc-overlay">
+                    <div className="wc-overlay-title">{product.name || product.title || 'Unnamed Product'}</div>
+                    <div className="wc-overlay-price">{product.price ? `Rs. ${product.price}` : 'Price not available'}</div>
+                  </div>
+                </div>
               </div>
-              <div className="wishlist-product-info">
-                <h3 className="wishlist-product-name">
-                  <FaHeartBroken className="wishlist-title-icon" /> {product.name || product.title}
-                </h3>
-                {product.price && <p className="wishlist-product-price">Rs. {product.price}</p>}
-                <button className="wishlist-remove-btn" onClick={() => handleRemove(product._id)}>
-                  <FaTrashAlt className="wishlist-remove-icon" /> Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

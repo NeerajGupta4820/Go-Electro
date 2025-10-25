@@ -1,44 +1,75 @@
 .footer {
-    padding: 20px 0;
-    text-align: center;
-    color: #fff;
-    padding: 50px 0px 30px;
-    /*border-top-left-radius: 125px; */
-    background: black;
-  }
+  position: relative;
+  padding: 0; /* move padding into inner so curve area doesn't get filled */
+  text-align: center;
+  color: #e9eef5;
+  background: transparent;
+  overflow: visible;
+}
+/* CSS-only curved top (no SVG) */
+.footer::before{
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(90deg, #2b3746 0%, #243141 60%, #1f2937 100%);
+  border-bottom-left-radius: 50% 40px;
+  border-bottom-right-radius: 50% 40px;
+  transform: translateY(-10%);
+  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.22));
+  z-index: 3;
+  pointer-events: none;
+}
   
-  .f-row{
-    width: 85%;
-    margin:auto ;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
+  .footer-inner{
+    background: #1f2937; /* dark gray */
+    padding: 60px 0 28px;
+    position: relative;
+    z-index: 1;
+    margin-top: -18px; /* tuck footer-inner under the curve so curve edge is visible */
   }
+
+  .f-row{
+      width: 88%;
+      margin: 0 auto 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      position: relative;
+      z-index: 2;
+    }
   .f-col{
     flex-basis: 25%;
     padding: 10px;
+    color: #d4d9df;
   }
   .f-logo{
-    width: 80px;
-    margin-bottom: 30px;
+    width: 92px;
+    margin-bottom: 18px;
   }
   .f-col:nth-child(2),.f-col:nth-child(3){
     flex-basis: 15%;
   }
   .f-col h3{
     width: 100%;
-    margin-bottom: 40px;
+    margin-bottom: 18px;
     position: relative;
+    font-size: 1.05rem;
+    letter-spacing: 0.2px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: #f1f5f9;
   }
   .email-id{
     width: fit-content;
-    border-bottom: 1ps solid #ccc;
-    margin: 20px 0px;
+    margin: 12px 0 8px;
+    color: #cbd5e1;
   }
 
   .f-col > ul{
@@ -46,82 +77,88 @@
   }
   .f-col ul li{
     list-style: none;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .f-col ul li a{
     text-decoration: none;
-    color: white;
+    color: #cbd5e1;
+    transition: color .18s ease;
   }
+  .f-col ul li a:hover{ color: #ffffff; }
 
   .f-col form{
-    padding-bottom: 15px;
+    padding-bottom: 8px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 50px;
-
+    gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 18px;
   }
-  .f-col form svg{
-    font-size: 18px;
-    margin-right: 10px;
-  }
+  .f-col form svg{ font-size: 18px; margin-right: 8px; color: #cbd5e1; }
   .f-col form input{
     width: 100%;
     background: transparent;
-    color: #ccc;
+    color: #cbd5e1;
     border: 0;
     outline: none;
+    padding: 6px 0;
   }
   .f-col form button{
-    background: transparent;
+    background: #2563eb;
     border: 0;
-    outline: none;
-    color: #ccc;
-    font-size: 16px;
-  }
-  .social-icon > svg{
-    width: 25px;
-    height: 30px;
-    border-radius: 50%;
-    text-align: center;
-    line-height:30px;
-    font-size: 10px;
-    color: #000;
-    background: #fff;
-    margin-right: 15px;
-    padding: 5px;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 6px;
     cursor: pointer;
   }
+  .social-icon > svg{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    text-align: center;
+    line-height:34px;
+    font-size: 14px;
+    color: #111827;
+    background: #ffffff;
+    margin-right: 12px;
+    padding: 6px;
+    cursor: pointer;
+    transition: transform .12s ease;
+  }
+  .social-icon > svg:hover{ transform: translateY(-3px); }
   footer > hr{
-    width: 90%;
+    width: 92%;
     border: 0;
-    border-bottom: 1px solid #ccc;
-    margin: 20px auto;
-  } 
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin: 18px auto;
+  }
   footer > p{
     text-align: center;
+    color: #cbd5e1;
+    margin-top: 8px;
   }
+  .footer-credit b{ color: #fff; }
   .underline{
-    width: 30%;
+    width: 28%;
     margin: auto;
-    height: 5px;
-    background: #767676;
-    border-radius: 3px;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
     position: absolute;
-    top: 25px;
-    left: 35%;
+    top: 28px;
+    left: 36%;
     overflow: hidden;
   }
   .underline span{
-    width: 15px;
+    width: 18px;
     height: 100%;
-    background: #fff;
+    background: #2563eb;
     border-radius: 3px;
     position: absolute;
     top: 0;
     left: 10px;
-    animation: moving 2s linear infinite
+    animation: moving 2s linear infinite;
   }
   @keyframes moving{
     0%{
@@ -132,14 +169,14 @@
     }
   }
 
-  @media screen and (max-width:700px) {
-    .footer{
-      bottom: unset;
-    }
-    .f-col{
-      flex-basis: 100%;
-    }
-    .f-col:nth-child(2),.f-col:nth-child(3){
-      flex-basis: 100%;
-    }
+  @media screen and (max-width:900px) {
+    .footer{ padding: 40px 0 24px; }
+    .f-row{ width: 94%; }
+    .f-col{ flex-basis: 50%; }
+    .f-col:nth-child(2),.f-col:nth-child(3){ flex-basis: 48%; }
+  }
+  @media screen and (max-width:500px) {
+    .f-col{ flex-basis: 100%; }
+    .f-col h3{ margin-bottom: 12px; }
+    .footer-curve{ height: 60px; }
   }

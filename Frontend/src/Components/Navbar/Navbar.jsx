@@ -156,16 +156,17 @@ const Navbar = () => {
               </li>
             </>
           )}
-          <li onClick={() => setIsMobileMenuOpen(false)}>
-            <Link to="/cart">
-              <FiShoppingCart />
+          <li className="nav-action-item" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/cart" className="nav-action-btn" aria-label="View cart">
+              <span className="nav-icon"><FiShoppingCart /></span>
+              <span className="nav-label">Cart</span>
+              {cartItems.length !== 0 && <Pill label={cartItems.length} />}
             </Link>
-            {cartItems.length !== 0 && <Pill label={cartItems.length} />}
           </li>
-          <li onClick={() => setIsMobileMenuOpen(false)}>
-            <Link to="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, color: '#e74c3c' }}>
-              <FaHeart style={{ color: '#e74c3c', fontSize: '1.3rem', verticalAlign: 'middle' }} />
-              <span style={{ fontWeight: 500, color: '#e74c3c', fontSize: '1rem' }}>Wishlist</span>
+          <li className="nav-action-item" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/wishlist" className="nav-action-btn nav-wishlist" aria-label="View wishlist">
+              <span className="nav-icon"><FaHeart /></span>
+              <span className="nav-label">Wishlist</span>
             </Link>
           </li>
 
@@ -185,7 +186,10 @@ const Navbar = () => {
               className="pro-electro-user-dropdown"
               style={{ position: "relative", cursor: "pointer", color: "#ffd700" }}
             >
-              <FaRegUser style={{ color: "#ff4d4d", fontWeight: "600" }} />
+              <button className="nav-action-btn nav-account-btn" aria-haspopup="true" aria-expanded={dropdownOpen}>
+                <span className="nav-icon"><FaRegUser /></span>
+                <span className="nav-label">Account</span>
+              </button>
               {dropdownOpen && (
                 <ul
                   className="pro-electro-dropdown-menu"

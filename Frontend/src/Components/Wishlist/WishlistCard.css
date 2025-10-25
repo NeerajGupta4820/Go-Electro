@@ -95,6 +95,38 @@
   background: #c0392b;
 }
 
+/* Improved card variations for richer layout */
+.wishlist-product-card.improved {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+.wishlist-product-card.improved .improved-img {
+  width: 140px;
+  height: 140px;
+  flex: 0 0 140px;
+}
+.wishlist-product-card.improved img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.wishlist-product-card.improved .improved-info {
+  text-align: left;
+  flex: 1 1 auto;
+}
+.wishlist-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.wishlist-product-price.muted {
+  color: #888;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
   .wishlist-container {
     padding: 1rem 0.2rem;
@@ -113,4 +145,122 @@
     width: 80px;
     height: 80px;
   }
+}
+
+/* Modern wishlist grid/cards */
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+.wishlist-card-modern {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow:  10px 12px 5px rgba(35,42,58,0.14);
+}
+.wishlist-card-modern:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(35,42,58,0.14);
+}
+.wc-image {
+  width: 100%;
+  /* make images square and consistent */
+  aspect-ratio: 1 / 1;
+  max-height: 320px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f7f7f7;
+}
+.wc-image img {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wc-heart-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  
+}
+.wc-heart-btn svg {
+  color: rgb(231, 76, 60);
+  fill: rgb(231, 76, 60);
+  font-size: 28px;
+}
+.wc-heart-btn:hover { 
+  transform: scale(1.06); 
+}
+
+.wc-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%);
+  color: white;
+  transform: translateY(100%);
+  transition: transform 0.22s cubic-bezier(.2,.9,.2,1);
+  z-index: 3;
+}
+.wc-overlay-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #ffffff; }
+.wc-overlay-price { font-weight: 700; color: #ec4e04; }
+
+/* make sure the heart button appears above the image and overlay */
+.wc-heart-btn { z-index: 5; }
+
+/* Lift and overlay reveal for image-only cards */
+.wishlist-card-modern.image-only { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+.wishlist-card-modern.image-only:hover { transform: translateY(-8px); box-shadow: 0 18px 40px rgba(35,42,58,0.18); }
+.wishlist-card-modern.image-only:active { transform: translateY(-12px); }
+.wishlist-card-modern.image-only:hover .wc-overlay { transform: translateY(0%); }
+.wc-body {
+  padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+}
+.wc-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.35rem;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wc-meta { display: flex; align-items: center; gap: 0.5rem; }
+.wc-price { font-weight: 700; color: #e74c3c; }
+.wc-price.muted { color: #888; font-style: italic; font-weight: 500; }
+.wc-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+.wc-btn {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.wc-view { background: #f3f4f6; color: #111827; }
+.wc-remove { background: #e74c3c; color: #fff; }
+.wc-btn svg { font-size: 0.95rem; }
+
+@media (max-width: 600px) {
+  .wishlist-grid { grid-template-columns: repeat(1, 1fr); }
+  .wc-actions { gap: 0.4rem; }
 }

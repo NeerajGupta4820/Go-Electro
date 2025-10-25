@@ -85,7 +85,6 @@ const Home = () => {
         visible={showStickyBar}
       />
       <div className="categories-section" ref={categoriesSectionRef}>
-        <h2>Shop by Categories</h2>
         {isCategoryLoading ? (
           <p>Loading categories...</p>
         ) : isCategoryError ? (

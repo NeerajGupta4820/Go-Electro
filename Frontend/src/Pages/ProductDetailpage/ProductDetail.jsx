@@ -6,13 +6,16 @@ import {
   FaWhatsapp, 
   FaLink,
   FaTimes,
-  FaInstagram
+  FaInstagram,
+  FaHeart,
+  FaRegHeart,
+  FaTelegram,
 } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
-import { FaTelegram } from 'react-icons/fa';
 import { useParams } from "react-router-dom";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { addToCompare, removeFromCompare } from '../../redux/slices/compareSlice';
+import { addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetProductByIdQuery, useGetRelatedProductsQuery } from "../../redux/api/productAPI";
 import { toast } from "react-toastify";
@@ -88,6 +91,7 @@ const ProductDetail = () => {
 
   // All hooks must be called before any return
   const compareProducts = useSelector(state => state.compare.products);
+  const wishlistProducts = useSelector((state) => state.wishlist.products);
   const [compareBtnState, setCompareBtnState] = useState('add');
   useEffect(() => {
     if (product && compareProducts.some(p => p._id === product._id)) {
@@ -104,13 +108,61 @@ const ProductDetail = () => {
     }
   }, [product]);
 
+  // Wishlist state derived from redux
+  const isWishlisted = Array.isArray(wishlistProducts) && wishlistProducts.some((p) => {
+    if (!p) return false;
+    if (typeof p === 'string') return p === product?._id;
+    return p._id === product?._id || p.id === product?._id || p.productId === product?._id;
+  });
+
+  const handleWishlist = () => {
+    if (!product) return;
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(product._id)).unwrap()
+        .then(() => {
+          toast.info('Removed from wishlist', {
+            position: 'top-center',
+            autoClose: 1200,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        })
+        .catch((err) => {
+          toast.error(err?.message || 'Failed to remove from wishlist', {
+            position: 'top-center',
+            autoClose: 1500,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        });
+    } else {
+      dispatch(addToWishlist(product._id)).unwrap()
+        .then(() => {
+          toast.success('Added to wishlist', {
+            position: 'top-center',
+            autoClose: 1200,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        })
+        .catch((err) => {
+          toast.error(err?.message || 'Failed to add to wishlist', {
+            position: 'top-center',
+            autoClose: 1500,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        });
+    }
+  };
+
   // Early returns (no hooks below this)
   if (isLoading || relatedLoading) return <Loader />;
   if (isError || !product) return <p>Product not found</p>;
 
   // Compute values after hooks and early returns
   const imagesToDisplay = product.images.filter((image) => image.color === selectedColor);
-  const shortDescription = product.description.split(" ").slice(0, 100).join(" ") + "...";
+  // const shortDescription unused here (kept for potential future use)
   const isCompared = compareProducts.some(p => p._id === product._id);
 
   const toggleDescription = () => {
@@ -189,6 +241,14 @@ const ProductDetail = () => {
                 onClick={handleCompareClick}
               >
                 Compare
+              </button>
+              <button
+                className={`wishlist-btn-detail ${isWishlisted ? 'active' : ''}`}
+                onClick={handleWishlist}
+                aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                style={{ background: 'none', border: 'none', marginLeft: 8 }}
+              >
+                {isWishlisted ? <FaHeart color="#e74c3c" size={24} /> : <FaRegHeart color="#e74c3c" size={24} />}
               </button>
             </div>
           </div>

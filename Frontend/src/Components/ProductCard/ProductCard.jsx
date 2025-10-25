@@ -64,12 +64,52 @@ const ProductCard = ({ product }) => {
       : "path/to/placeholder-image.jpg";
 
   // Wishlist logic
-  const isWishlisted = wishlistProducts.some((p) => p._id === product._id);
+  // wishlistProducts may be an array of product objects or an array of product IDs
+  const isWishlisted = Array.isArray(wishlistProducts) && wishlistProducts.some((p) => {
+    if (!p) return false;
+    if (typeof p === 'string') return p === product._id;
+    // object case: compare _id or id or productId
+    return p._id === product._id || p.id === product._id || p.productId === product._id;
+  });
   const handleWishlist = () => {
     if (isWishlisted) {
-      dispatch(removeFromWishlist(product._id));
+      // remove and show toast on success/failure
+      dispatch(removeFromWishlist(product._id)).unwrap()
+        .then(() => {
+          toast.info('Removed from wishlist', {
+            position: 'top-center',
+            autoClose: 1200,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        })
+        .catch((err) => {
+          toast.error(err?.message || 'Failed to remove from wishlist', {
+            position: 'top-center',
+            autoClose: 1500,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        });
     } else {
-      dispatch(addToWishlist(product._id));
+      // add and show toast on success/failure
+      dispatch(addToWishlist(product._id)).unwrap()
+        .then(() => {
+          toast.success('Added to wishlist', {
+            position: 'top-center',
+            autoClose: 1200,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        })
+        .catch((err) => {
+          toast.error(err?.message || 'Failed to add to wishlist', {
+            position: 'top-center',
+            autoClose: 1500,
+            hideProgressBar: true,
+            theme: 'dark',
+          });
+        });
     }
   };
 
