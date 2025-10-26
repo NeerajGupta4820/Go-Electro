@@ -5,18 +5,29 @@ import {
   useUpdateProductMutation,
 } from "../../../redux/api/productAPI";
 import { useFetchAllCategoriesQuery } from "../../../redux/api/categoryAPI";
-import { FaSave, FaPlus } from "react-icons/fa";
+import { useFetchAllCouponsQuery } from "../../../redux/api/couponAPI";
+import { FaSave, FaPlus, FaTrash } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "./UpdateProduct.css";
-import { useFetchAllCouponsQuery } from "../../../redux/api/couponAPI";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const UpdateProduct = () => {
   const { id } = useParams();
-  const { data: productData, isLoading: productLoading } =
-    useGetProductByIdQuery(id);
+  const { data: productData, isLoading: productLoading } = useGetProductByIdQuery(id);
   const { data: categories } = useFetchAllCategoriesQuery();
-  const {data:coupons} = useFetchAllCouponsQuery();
+  const { data: coupons } = useFetchAllCouponsQuery();
   const [updateProduct] = useUpdateProductMutation();
   const navigate = useNavigate();
 
@@ -26,10 +37,8 @@ const UpdateProduct = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
-  const [newImages,setNewImages] = useState([{color:"",images:[]}]);
-  const [colorImages, setColorImages] = useState([
-    { color: "", images: [], _id: "" },
-  ]);
+  const [newImages, setNewImages] = useState([{ color: "", images: [] }]);
+  const [colorImages, setColorImages] = useState([{ color: "", images: [], _id: "" }]);
   const [uploading, setUploading] = useState(false);
   const [associatedCoupons, setAssociatedCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState("");
@@ -38,46 +47,48 @@ const UpdateProduct = () => {
     if (productData) {
       setProductName(productData.product.title);
       setPrice(productData.product.price);
-      setPrice(productData.product.stock);
+      setStock(productData.product.stock);
       setDescription(productData.product.description);
       setCategory(productData.product.category);
       setBrand(productData.product.brand);
       setColorImages(
         productData.product.images || [{ color: "", images: [], _id: "" }]
       );
+      setAssociatedCoupons(productData.product.coupons || []);
     }
   }, [productData]);
 
   const handleImageChange = (index, e, color) => {
     const files = Array.from(e.target.files);
-    const colorExists = newImages.find(imageObj => imageObj.color === color);
-  
+    const colorExists = newImages.find((imageObj) => imageObj.color === color);
+
     let updatedImages;
-    
     if (colorExists) {
-      updatedImages = newImages.map(imageObj =>
-        imageObj.color === color
-          ? { ...imageObj, images: [...files] }
-          : imageObj
+      updatedImages = newImages.map((imageObj) =>
+        imageObj.color === color ? { ...imageObj, images: [...files] } : imageObj
       );
     } else {
-      updatedImages = [
-        ...newImages,
-        { color: color, images: [...files] }
-      ];
+      updatedImages = [...newImages, { color: color, images: [...files] }];
     }
-  
     setNewImages(updatedImages);
   };
-  
+
   const handleColorChange = (index, e) => {
     const updatedColorImages = [...colorImages];
     updatedColorImages[index].color = e.target.value;
-    setNewImages(updatedColorImages);
+    setColorImages(updatedColorImages);
+  };
+
+  const handleRemoveImage = (colorIndex, imageIndex) => {
+    const updatedColorImages = [...colorImages];
+    updatedColorImages[colorIndex].images = updatedColorImages[colorIndex].images.filter(
+      (_, idx) => idx !== imageIndex
+    );
+    setColorImages(updatedColorImages);
   };
 
   const addColorImage = () => {
-    setNewImages([...colorImages, { color: "", images: [] }]);
+    setColorImages([...colorImages, { color: "", images: [], _id: "" }]);
   };
 
   const handleUpload = async (files) => {
@@ -117,34 +128,34 @@ const UpdateProduct = () => {
   };
 
   const mergeImagesByColor = (colorImages, productImages) => {
-    let combinedImages = productImages.map(productImage => ({
+    let combinedImages = productImages.map((productImage) => ({
       color: productImage.color,
-      imageLinks: productImage.imageLinks || [] 
+      imageLinks: productImage.imageLinks || [],
     }));
-  
+
     colorImages.forEach((colorImage) => {
       const existingColor = combinedImages.find(
         (productImage) => productImage.color === colorImage.color
       );
-  
+
       if (existingColor) {
         existingColor.imageLinks = [
           ...existingColor.imageLinks,
-          ...(colorImage.imageLinks || []) 
+          ...(colorImage.imageLinks || []),
         ];
       } else {
         combinedImages.push({
           color: colorImage.color,
-          imageLinks: colorImage.imageLinks || [] 
+          imageLinks: colorImage.imageLinks || [],
         });
       }
     });
-  
+
     return combinedImages;
   };
-  
+
   const handleAddCoupon = () => {
-    const newCoupon = coupons.find((coupon) => coupon._id === selectedCoupon);
+    const newCoupon = coupons?.coupons.find((coupon) => coupon._id === selectedCoupon);
     if (newCoupon && !associatedCoupons.some((coupon) => coupon._id === newCoupon._id)) {
       setAssociatedCoupons([...associatedCoupons, newCoupon]);
       setSelectedCoupon("");
@@ -156,17 +167,15 @@ const UpdateProduct = () => {
   const handleRemoveCoupon = (couponId) => {
     setAssociatedCoupons(associatedCoupons.filter((coupon) => coupon._id !== couponId));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.loading("Updating product...");
 
     const productImages = [];
-    console.log(newImages);
     for (const colorImage of newImages) {
-      console.log(colorImage);
       if (colorImage.color && colorImage.images.length > 0) {
         const uploadedImages = await handleUpload(colorImage.images);
-        console.log(uploadedImages);
         if (uploadedImages.length > 0) {
           productImages.push({
             color: colorImage.color,
@@ -175,12 +184,8 @@ const UpdateProduct = () => {
         }
       }
     }
-    console.log("productImages: ",productImages);
-    console.log("colorImages: ",colorImages);
 
-    const newim = mergeImagesByColor(colorImages,productImages);
-    console.log(newim);
-
+    const newim = mergeImagesByColor(colorImages, productImages);
     const updatedProductData = {
       title: productName,
       price,
@@ -188,9 +193,9 @@ const UpdateProduct = () => {
       description,
       category,
       brand,
-      images:newim
+      images: newim,
+      coupons: associatedCoupons.map((coupon) => coupon._id),
     };
-    console.log(updatedProductData)
 
     try {
       await updateProduct({ id, productData: updatedProductData }).unwrap();
@@ -209,166 +214,367 @@ const UpdateProduct = () => {
         isLoading: false,
         autoClose: 3000,
       });
-    }finally{
+    } finally {
       toast.dismiss(toastId);
     }
   };
 
-  if (productLoading) return <div>Loading...</div>;
+  if (productLoading) return <div className="text-center text-blue-600 text-lg font-medium">Loading...</div>;
 
   return (
-    <div className="update-product-container">
-      <h2>Update Product</h2>
-      <form
-        className="update-product-form"
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
-        <div className="form-group">
-          <label htmlFor="productName">Product Name</label>
-          <input
-            type="text"
-            id="productName"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="price">Price</label>
-          <input
-            type="number"
-            id="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="stock">Stock</label>
-          <input
-            type="number"
-            id="stock"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="category">Category</label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          >
-            <option value="">Select a category</option>
-            {categories?.data.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Associated Coupons</label>
-          <ul>
-            {associatedCoupons.map((coupon) => (
-              <li key={coupon._id}>
-                {coupon.code} - ₹{coupon.discount}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveCoupon(coupon._id)}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="addCoupon">Add Coupon</label>
-          <select
-            id="addCoupon"
-            value={selectedCoupon}
-            onChange={(e) => setSelectedCoupon(e.target.value)}
-          >
-            <option value="">Select a coupon</option>
-            {coupons &&
-              coupons.coupons.map((coupon) => (
-                <option key={coupon._id} value={coupon._id}>
-                  {coupon.code} - ₹{coupon.discount}
-                </option>
-              ))}
-          </select>
-          <button type="button" onClick={handleAddCoupon}>
-            <FaPlus /> Add Coupon
-          </button>
-        </div>
-        <div className="form-group">
-          <label htmlFor="brand">Brand</label>
-          <input
-            type="text"
-            id="brand"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            required
-          />
-        </div>
-        {colorImages.map((colorImage, index) => (
-          <div key={colorImage._id} className="form-group color-image-group">
-            <label htmlFor={`color-${index}`}>Color</label>
-            <input
-              type="text"
-              id={`color-${index}`}
-              value={colorImage.color}
-              onChange={(e) => handleColorChange(index, e)}
-              placeholder="Enter color name"
-              required
-            />
-            <label htmlFor={`images-${index}`}>Upload New Images</label>
-            <input
-              type="file"
-              id={`images-${index}`}
-              multiple
-              accept="image/*"
-              onChange={(e) => handleImageChange(index, e,colorImage.color)}
-            />
-            <div className="image-preview">
-              {colorImage.imageLinks && colorImage.imageLinks.length === 0 ? (
-                <p>No images uploaded for this color</p>
-              ) : (
-                colorImage.imageLinks &&
-                colorImage.imageLinks.map((imageLink, i) => (
-                  <img
-                    key={i}
-                    src={imageLink}
-                    alt={`preview-${i}`}
-                    className="image-thumbnail"
+    <TooltipProvider>
+      <div className="container mx-auto p-6 space-y-6 bg-gray-50 min-h-screen">
+        <Card className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-blue-500 bg-white max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-blue-700 md:text-3xl">
+              Update Product
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Product Name */}
+                <div className="space-y-2">
+                  <label htmlFor="productName" className="block font-medium text-blue-700">
+                    Product Name
+                  </label>
+                  <Input
+                    id="productName"
+                    type="text"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    required
+                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                      !productName && "border-red-500"
+                    }`}
+                    placeholder="Enter product name"
+                    aria-describedby="productName-error"
                   />
-                ))
-              )}
-            </div>
-          </div>
-        ))}
-        <button type="button" className="add-color-btn" onClick={addColorImage}>
-          Add Another Color and Images
-        </button>
-        <button className="submit-btn" type="submit" disabled={uploading}>
-          <FaSave /> Update Product
-        </button>
-      </form>
-    </div>
+                  {!productName && (
+                    <p id="productName-error" className="text-red-500 text-sm">
+                      Product name is required
+                    </p>
+                  )}
+                </div>
+                {/* Price */}
+                <div className="space-y-2">
+                  <label htmlFor="price" className="block font-medium text-blue-700">
+                    Price
+                  </label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                      !price && "border-red-500"
+                    }`}
+                    placeholder="Enter price"
+                    aria-describedby="price-error"
+                  />
+                  {!price && (
+                    <p id="price-error" className="text-red-500 text-sm">
+                      Price is required
+                    </p>
+                  )}
+                </div>
+                {/* Stock */}
+                <div className="space-y-2">
+                  <label htmlFor="stock" className="block font-medium text-blue-700">
+                    Stock
+                  </label>
+                  <Input
+                    id="stock"
+                    type="number"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                    required
+                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                      !stock && "border-red-500"
+                    }`}
+                    placeholder="Enter stock quantity"
+                    aria-describedby="stock-error"
+                  />
+                  {!stock && (
+                    <p id="stock-error" className="text-red-500 text-sm">
+                      Stock is required
+                    </p>
+                  )}
+                </div>
+                {/* Category */}
+                <div className="space-y-2">
+                  <label htmlFor="category" className="block font-medium text-blue-700">
+                    Category
+                  </label>
+                  <Select
+                    value={category}
+                    onValueChange={setCategory}
+                    required
+                  >
+                    <SelectTrigger
+                      className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                        !category && "border-red-500"
+                      }`}
+                      aria-describedby="category-error"
+                    >
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories?.data.map((cat) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {!category && (
+                    <p id="category-error" className="text-red-500 text-sm">
+                      Category is required
+                    </p>
+                  )}
+                </div>
+                {/* Brand */}
+                <div className="space-y-2">
+                  <label htmlFor="brand" className="block font-medium text-blue-700">
+                    Brand
+                  </label>
+                  <Input
+                    id="brand"
+                    type="text"
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    required
+                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                      !brand && "border-red-500"
+                    }`}
+                    placeholder="Enter brand name"
+                    aria-describedby="brand-error"
+                  />
+                  {!brand && (
+                    <p id="brand-error" className="text-red-500 text-sm">
+                      Brand is required
+                    </p>
+                  )}
+                </div>
+              </div>
+              {/* Description (Full Row) */}
+              <div className="space-y-2">
+                <label htmlFor="description" className="block font-medium text-blue-700">
+                  Description
+                </label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                    !description && "border-red-500"
+                  }`}
+                  placeholder="Enter product description"
+                  rows={4}
+                  aria-describedby="description-error"
+                />
+                {!description && (
+                  <p id="description-error" className="text-red-500 text-sm">
+                    Description is required
+                  </p>
+                )}
+              </div>
+              {/* Associated Coupons */}
+              <div className="space-y-2">
+                <label className="block font-medium text-blue-700">Associated Coupons</label>
+                <div className="space-y-2">
+                  {associatedCoupons.length > 0 ? (
+                    associatedCoupons.map((coupon) => (
+                      <div
+                        key={coupon._id}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-md border border-gray-200"
+                      >
+                        <span className="text-blue-600 font-medium">{coupon.code} - ₹{coupon.discount}</span>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleRemoveCoupon(coupon._id)}
+                              className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
+                              aria-label="Remove coupon"
+                            >
+                              <FaTrash className="h-3 w-3" />
+                              Remove
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Remove this coupon</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm italic">No coupons associated yet.</p>
+                  )}
+                </div>
+              </div>
+              {/* Add Coupon */}
+              <div className="space-y-2">
+                <label className="block font-medium text-blue-700">Add Coupon</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Select
+                    value={selectedCoupon}
+                    onValueChange={setSelectedCoupon}
+                  >
+                    <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md">
+                      <SelectValue placeholder="Select a coupon" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {coupons?.coupons
+                        .filter((coupon) => !associatedCoupons.some((ac) => ac._id === coupon._id))
+                        .map((coupon) => (
+                          <SelectItem key={coupon._id} value={coupon._id}>
+                            {coupon.code} - ₹{coupon.discount}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        onClick={handleAddCoupon}
+                        disabled={!selectedCoupon}
+                        className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Add coupon"
+                      >
+                        <FaPlus className="h-4 w-4" />
+                        Add Coupon
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add selected coupon</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+              {/* Color and Images */}
+              {colorImages.map((colorImage, index) => (
+                <div key={colorImage._id || index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor={`color-${index}`} className="block font-medium text-blue-700">
+                      Color
+                    </label>
+                    <Input
+                      id={`color-${index}`}
+                      type="text"
+                      value={colorImage.color}
+                      onChange={(e) => handleColorChange(index, e)}
+                      placeholder="Enter color name"
+                      required
+                      className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
+                        !colorImage.color && "border-red-500"
+                      }`}
+                      aria-describedby={`color-${index}-error`}
+                    />
+                    {!colorImage.color && (
+                      <p id={`color-${index}-error`} className="text-red-500 text-sm">
+                        Color is required
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor={`images-${index}`} className="block font-medium text-blue-700">
+                      Upload New Images
+                    </label>
+                    <Input
+                      id={`images-${index}`}
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => handleImageChange(index, e, colorImage.color)}
+                      className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md"
+                    />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {colorImage.imageLinks?.map((imageLink, i) => (
+                        <div key={i} className="relative">
+                          <img
+                            src={imageLink}
+                            alt={`preview-${i}`}
+                            className="w-12 h-12 object-cover rounded-md border border-blue-200"
+                          />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                className="absolute top-0 right-0 p-1 text-red-600 hover:text-red-800"
+                                onClick={() => handleRemoveImage(index, i)}
+                                aria-label="Remove image"
+                              >
+                                <FaTrash className="h-3 w-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Remove this image</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {/* Add Color Button */}
+              <div className="space-y-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      onClick={addColorImage}
+                      className="group w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 rounded-md transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
+                      aria-label="Add another color and images"
+                    >
+                      <FaPlus className="h-5 w-5 transition-transform group-hover:rotate-90" />
+                      Add Another Color and Images
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add Another Color and Images</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              {/* Submit Button */}
+              <div className="space-y-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="submit"
+                      disabled={uploading}
+                      className="group w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50"
+                      aria-label="Update product"
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <FaSave className="h-5 w-5 transition-transform group-hover:rotate-90" />
+                          Update Product
+                        </>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Update Product</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </TooltipProvider>
   );
 };
 

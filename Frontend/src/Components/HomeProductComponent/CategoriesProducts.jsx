@@ -1,38 +1,81 @@
+import { useState, useRef } from 'react';
 import { useGetAllProductsQuery } from '../../redux/api/productAPI.js';
-import { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { FaShoppingCart } from "react-icons/fa";
-import "./CategoriesProduct.css";
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react';
+import { FaShoppingCart } from 'react-icons/fa';
 
-const Earphone = () => {
+const categoriesToDisplay = [
+  { slug: 'earphone', name: 'Earphones & Headphones', icon: '🎧' },
+  { slug: 'bluetoothspeaker', name: 'Bluetooth Speakers', icon: '🔊' },
+  { slug: 'powerbank', name: 'Power Banks', icon: '🔋' },
+];
+
+const ProductCard = ({ product, onAddToCart, isAdded }) => {
   const navigate = useNavigate();
+
+  const handleImageClick = () => {
+    navigate(`/product/${product._id}`);
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <Card className="group relative overflow-hidden  to-blue-50 border border-gray-200 shadow-[0_4px_18px_rgba(35,39,47,0.10)] hover:shadow-[0_12px_32px_rgba(35,39,47,0.13)] transition-all duration-200 hover:-translate-y-1 flex flex-col h-full animate-[scaleIn_0.3s_ease-in]">
+      <div className="relative overflow-hidden bg-gray-100/30 p-6">
+        <img
+          src={product.images[0]?.imageLinks[0] || 'https://via.placeholder.com/400'}
+          alt={product.title}
+          className="w-full h-48 object-contain rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+          onClick={handleImageClick}
+        />
+        <div className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+          ₹{product.price.toLocaleString()}
+        </div>
+      </div>
+
+      <div className="flex flex-col flex-grow p-5">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 min-h-[3.5rem] font-['Inter']">
+          {product.title}
+        </h3>
+
+        <div className="flex items-center gap-1 mb-4">
+          <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />
+          <span className="text-sm font-medium text-gray-600">
+            {product.ratings} / 5
+          </span>
+        </div>
+
+        <Button
+          className={`w-full mt-auto flex items-center gap-2 px-5 py-3 text-base font-semibold rounded-xl transition-all duration-200 shadow-[0_2px_8px_rgba(62,125,242,0.09)] ${
+            isAdded
+              ? 'bg-green-600 hover:bg-green-700'
+              : 'bg-[#23272f] hover:bg-gray-800'
+          }`}
+          onClick={onAddToCart}
+        >
+          <FaShoppingCart className={`w-4 h-4 ${isAdded ? 'animate-[cartBounce_0.7s_linear]' : ''}`} />
+          {isAdded ? 'Added to Cart' : 'Add to Cart'}
+        </Button>
+      </div>
+    </Card>
+  );
+};
+
+export default function ProductCategories() {
+  const [addedProducts, setAddedProducts] = useState(new Set());
+  const scrollRefs = useRef({});
   const dispatch = useDispatch();
   const { data, isLoading } = useGetAllProductsQuery();
-  
-  const colors = ["#4dbdd6", "#28a745", "#ffc107", "#dc3545"];
-  const [buttonColors, setButtonColors] = useState({});
-  const [addedProducts, setAddedProducts] = useState({});
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!data || !Array.isArray(data.products)) return <p>No products available</p>;
-
-  const products = data.products;
-  const categoriesToDisplay = ['earphone', 'bluetoothspeaker', 'powerbank'];
+  if (isLoading) return <p className="text-center text-gray-600">Loading...</p>;
+  if (!data || !Array.isArray(data.products)) return <p className="text-center text-gray-600">No products available</p>;
 
   const handleAddToCart = (productId, product) => {
-    // Randomize color for this product
-    const randomColor = colors[(Math.random() * colors.length) | 0];
-
-    // Update button color for this specific product
-    setButtonColors(prevState => ({
-      ...prevState,
-      [productId]: randomColor
-    }));
-
-    // Add the product to the cart
+    setAddedProducts((prev) => new Set(prev).add(productId));
     dispatch(
       addToCart({
         productId: product._id,
@@ -42,154 +85,145 @@ const Earphone = () => {
         images: product.images,
       })
     );
-
-    // Show success toast
-    toast.success("Added to Cart", {
-      position: "top-center",
+    toast.success(`${product.title} added to cart!`, {
+      position: 'top-center',
       autoClose: 1000,
       hideProgressBar: true,
-      theme: "dark",
+      theme: 'dark',
     });
 
-    // Mark product as added
-    setAddedProducts(prevState => ({
-      ...prevState,
-      [productId]: true
-    }));
-
-    // Reset the button color and added state after 1.5 seconds
     setTimeout(() => {
-      setButtonColors(prevState => ({
-        ...prevState,
-        [productId]: "#rgb(247, 139, 90)" // Reset to default color
-      }));
-      setAddedProducts(prevState => ({
-        ...prevState,
-        [productId]: false
-      }));
+      setAddedProducts((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
     }, 1500);
   };
 
-  const handleImageClick = (id) => {
-    navigate(`/product/${id}`);
-    window.scrollTo(0, 0);
+  const scroll = (categorySlug, direction) => {
+    const container = scrollRefs.current[categorySlug];
+    if (!container) return;
+
+    const scrollAmount = container.offsetWidth * 0.8;
+    const newScrollLeft =
+      direction === 'left'
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount;
+
+    container.scrollTo({
+      left: newScrollLeft,
+      behavior: 'smooth',
+    });
   };
 
   return (
-    <div className="main-cateory-proudcts-container categories-main-wide">
-      <h1 className="categories-heading-sale">Shop by Category</h1>
-      {categoriesToDisplay.map(categorySlug => {
-        const filteredProducts = products.filter(product => product.category.slug === categorySlug);
-        if (filteredProducts.length === 0) return null;
-
-        return (
-          <div key={categorySlug} className="category-section-block">
-            <h2 className="category-section-title-sale">{categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)}</h2>
-            {filteredProducts.length < 4 ? (
-              <div className="category-products">
-                {filteredProducts.map(product => (
-                  <div key={product._id} className="categorieswise-product-card categories-card-vibrant">
-                    <h3>{product.title}</h3>
-                    {product.images.length > 0 && (
-                      <img 
-                        src={product.images[0].imageLinks[0]} 
-                        alt={product.title} 
-                        onClick={() => handleImageClick(product._id)}
-                        className="category-product-image"
-                      />
-                    )}
-                    <p className="category-card-price">₹{product.price}</p>
-                    <p className="category-card-rating">Rating: {product.ratings} / 5</p>
-                    <button 
-                      className="category-product-button" 
-                      onClick={() => handleAddToCart(product._id, product)} 
-                      style={{ backgroundColor: buttonColors[product._id] || "#23272f" }}
-                    >
-                      <FaShoppingCart className={`cart-icon ${addedProducts[product._id] ? "move" : ""}`} />
-                      {addedProducts[product._id] ? "Added" : "Add to Cart"}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-        <div
-          className="category-products-slider"
-                onMouseDown={e => {
-                  const slider = e.currentTarget;
-                  slider.isDown = true;
-                  slider.startX = e.pageX - slider.offsetLeft;
-                  slider.scrollLeftStart = slider.scrollLeft;
-                  slider.classList.add('active');
-                }}
-                onMouseLeave={e => {
-                  const slider = e.currentTarget;
-                  slider.isDown = false;
-                  slider.classList.remove('active');
-                }}
-                onMouseUp={e => {
-                  const slider = e.currentTarget;
-                  slider.isDown = false;
-                  slider.classList.remove('active');
-                }}
-                onMouseMove={e => {
-                  const slider = e.currentTarget;
-                  if (!slider.isDown) return;
-                  e.preventDefault();
-                  const x = e.pageX - slider.offsetLeft;
-                  const walk = (x - slider.startX) * 1.2;
-                  slider.scrollLeft = slider.scrollLeftStart - walk;
-                }}
-                onTouchStart={e => {
-                  const slider = e.currentTarget;
-                  slider.isDown = true;
-                  slider.startX = e.touches[0].pageX - slider.offsetLeft;
-                  slider.scrollLeftStart = slider.scrollLeft;
-                }}
-                onTouchEnd={e => {
-                  const slider = e.currentTarget;
-                  slider.isDown = false;
-                }}
-                onTouchMove={e => {
-                  const slider = e.currentTarget;
-                  if (!slider.isDown) return;
-                  const x = e.touches[0].pageX - slider.offsetLeft;
-                  const walk = (x - slider.startX) * 1.2;
-                  slider.scrollLeft = slider.scrollLeftStart - walk;
-                }}
-              >
-                {filteredProducts.map(product => (
-                  <div
-                    key={product._id}
-                    className="categorieswise-product-card categories-card-vibrant slider-card"
-                  >
-                    <h3>{product.title}</h3>
-                    {product.images.length > 0 && (
-                      <img 
-                        src={product.images[0].imageLinks[0]} 
-                        alt={product.title} 
-                        onClick={() => handleImageClick(product._id)}
-                        className="category-product-image"
-                      />
-                    )}
-                    <p className="category-card-price">₹{product.price}</p>
-                    <p className="category-card-rating">Rating: {product.ratings} / 5</p>
-                    <button 
-                      className="category-product-button" 
-                      onClick={() => handleAddToCart(product._id, product)} 
-                      style={{ backgroundColor: buttonColors[product._id] || "#23272f" }}
-                    >
-                      <FaShoppingCart className={`cart-icon ${addedProducts[product._id] ? "move" : ""}`} />
-                      {addedProducts[product._id] ? "Added" : "Add to Cart"}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+    <>
+      <style>
+        {`
+          @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          @keyframes cartBounce {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px) scale(1.2); }
+            100% { transform: translateX(0); }
+          }
+        `}
+      </style>
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-['Inter']">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 animate-[fadeIn_0.5s_ease-in]">
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Shop by Category
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Discover our premium collection of audio devices and accessories
+            </p>
           </div>
-        );
-      })}
-    </div>
-  );
-};
 
-export default Earphone;
+          {categoriesToDisplay.map((category, index) => {
+            const categoryProducts = data.products.filter((p) => p.category.slug === category.slug);
+
+            return (
+              <div
+                key={category.slug}
+                className="mb-16 animate-[slideIn_0.5s_ease-in]"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
+                    <span className="text-3xl">{category.icon}</span>
+                    {category.name}
+                  </h2>
+
+                  {categoryProducts.length >= 4 && (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full bg-gradient-to-br from-[#3aa2b4] to-[#4dbdd6] text-white border-none shadow-[0_2px_8px_rgba(62,125,242,0.08)] hover:bg-gradient-to-br hover:from-[#247ba0] hover:to-[#3aa2b4] transition-all duration-200"
+                        onClick={() => scroll(category.slug, 'left')}
+                        disabled={scrollRefs.current[category.slug]?.scrollLeft === 0}
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full bg-gradient-to-br from-[#3aa2b4] to-[#4dbdd6] text-white border-none shadow-[0_2px_8px_rgba(62,125,242,0.08)] hover:bg-gradient-to-br hover:from-[#247ba0] hover:to-[#3aa2b4] transition-all duration-200"
+                        onClick={() => scroll(category.slug, 'right')}
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {categoryProducts.length < 4 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {categoryProducts.map((product) => (
+                      <ProductCard
+                        key={product._id}
+                        product={product}
+                        onAddToCart={() => handleAddToCart(product._id, product)}
+                        isAdded={addedProducts.has(product._id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    ref={(el) => (scrollRefs.current[category.slug] = el)}
+                    className="flex overflow-x-auto gap-6 pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                  >
+                    {categoryProducts.map((product) => (
+                      <div
+                        key={product._id}
+                        className="flex-none w-72 snap-start"
+                      >
+                        <ProductCard
+                          product={product}
+                          onAddToCart={() => handleAddToCart(product._id, product)}
+                          isAdded={addedProducts.has(product._id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}

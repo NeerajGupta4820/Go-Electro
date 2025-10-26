@@ -3,22 +3,23 @@ import BarChart from "./BarChart";
 import PieChart from "./PieChart";
 import LineChart from "./LineChart";
 import {
-    useGetOrderMutation,
-    useGetProductMutation,
-    useGetUsersMutation,
-  } from "../../../redux/api/chartAPI";
-import "./chart.css";
+  useGetOrderMutation,
+  useGetProductMutation,
+  useGetUsersMutation,
+} from "../../../redux/api/chartAPI";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import dayjs from "dayjs";
-
 
 const Chart = () => {
   const getRandomColor = () => {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        const a = (Math.random() * 0.5 + 0.4).toFixed(2);
-        return `rgba(${r}, ${g}, ${b}, ${a})`;
-      };
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    const a = (Math.random() * 0.5 + 0.4).toFixed(2);
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  };
+
   const [getProduct, { isLoading, error }] = useGetProductMutation();
   const [getOrder] = useGetOrderMutation();
   const [getUser] = useGetUsersMutation();
@@ -28,7 +29,7 @@ const Chart = () => {
   const [userAdminData, setUserAdminData] = useState({});
   const [userMonthlyData, setUserMonthlyData] = useState({});
   const [userAgeData, setUserAgeData] = useState({});
-  const [toDisplay,setToDisplay] = useState("Bar");
+  const [toDisplay, setToDisplay] = useState("Bar");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +49,7 @@ const Chart = () => {
       }
     };
     fetchData();
-  }, [getProduct]);
+  }, [getProduct, getOrder, getUser]);
 
   const processOrderStatusData = (orders) => {
     let processingCount = 0;
@@ -94,7 +95,6 @@ const Chart = () => {
   };
 
   const processChartData = (products) => {
-    // Group stocks by category
     const categoryMap = {};
 
     products &&
@@ -103,7 +103,6 @@ const Chart = () => {
           (categoryMap[item.category] || 0) + item.stock;
       });
 
-    // Prepare data for Chart.js
     const labels = Object.keys(categoryMap);
     const stockData = Object.values(categoryMap);
 
@@ -113,7 +112,7 @@ const Chart = () => {
         {
           label: "Stock per Category",
           data: stockData,
-          backgroundColor: getRandomColor,
+          backgroundColor: labels.map(() => getRandomColor()),
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
         },
@@ -141,10 +140,10 @@ const Chart = () => {
           label: "Stock Status",
           data: [inStockCount, outOfStockCount],
           backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(255, 99, 132, 0.6)",
+            "rgba(34, 197, 94, 0.6)",
+            "rgba(239, 68, 68, 0.6)",
           ],
-          borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+          borderColor: ["rgba(34, 197, 94, 1)", "rgba(239, 68, 68, 1)"],
           borderWidth: 1,
         },
       ],
@@ -243,51 +242,42 @@ const Chart = () => {
     });
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data.</p>;
-  return (
-    <div className="chart">
-        <div className="Top-Bar">
-            <button onClick={()=>setToDisplay("Bar")}>Bar</button>
-            <button onClick={()=>setToDisplay("Pie")}>Pie</button>
-            <button onClick={()=>setToDisplay("Line")}>Line</button>
-        </div>
+  if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">Error loading data.</p>;
 
-      
-            {toDisplay === "Bar" && <BarChart
-              data={{
-                chartData,
-                stockChartData,
-                orderChartData,
-                userAdminData,
-                userMonthlyData,
-                userAgeData,
-              }}
-            />}
-         
-        
-            {toDisplay === "Pie" && <PieChart
-              data={{
-                chartData,
-                stockChartData,
-                orderChartData,
-                userAdminData,
-                userMonthlyData,
-                userAgeData,
-              }}
-            />}
-          
-            {toDisplay === "Line" && <LineChart
-              data={{
-                chartData,
-                stockChartData,
-                orderChartData,
-                userAdminData,
-                userMonthlyData,
-                userAgeData,
-              }}
-            />}
-          
+  const chartDataProps = {
+    chartData,
+    stockChartData,
+    orderChartData,
+    userAdminData,
+    userMonthlyData,
+    userAgeData,
+  };
+
+  return (
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center mb-6">Analytics Dashboard</h2>
+      <Tabs
+        defaultValue="Bar"
+        value={toDisplay}
+        onValueChange={setToDisplay}
+        className="w-full"
+      >
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-6">
+          <TabsTrigger value="Bar">Bar</TabsTrigger>
+          <TabsTrigger value="Pie">Pie</TabsTrigger>
+          <TabsTrigger value="Line">Line</TabsTrigger>
+        </TabsList>
+        <TabsContent value="Bar">
+          <BarChart data={chartDataProps} />
+        </TabsContent>
+        <TabsContent value="Pie">
+          <PieChart data={chartDataProps} />
+        </TabsContent>
+        <TabsContent value="Line">
+          <LineChart data={chartDataProps} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

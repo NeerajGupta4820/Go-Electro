@@ -21,7 +21,7 @@ import StickyCategoriesBar from './Components/Navbar/StickyCategoriesBar';
 import { useFetchAllCategoriesQuery } from './redux/api/categoryAPI';
 import CompareStrip from './Components/CompareStrip/CompareStrip';
 import CompareProducts from './Pages/CompareProducts/CompareProducts';
-import GoElectroChatbot from './Components/GoElectroChatbot/GoElectroChatbot';
+// import GoElectroChatbot from './Components/GoElectroChatbot/GoElectroChatbot';
 import WishlistPage from './Pages/Wishlist/WishlistPage';
 
 const AppContent = () => {
@@ -75,7 +75,7 @@ const AppContent = () => {
         <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
       {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <GoElectroChatbot />}
+      {/* {!isAdminRoute && <GoElectroChatbot />} */}
     </>
   );
 };

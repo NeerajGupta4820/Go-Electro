@@ -1,12 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
-import { Range } from "react-range";
-import { FaTimes, FaBoxOpen } from 'react-icons/fa';
-import "./allProducts.css";
+import { FaBoxOpen, FaStar } from "react-icons/fa";
 import { useGetAllProductsQuery } from "../../redux/api/productAPI";
-import ProductCard from "../../Components/ProductCard/ProductCard";
 import { useFetchAllCategoriesQuery } from "../../redux/api/categoryAPI";
 import { useLocation } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import ProductCard from "../../Components/ProductCard/ProductCard";
+import { Button } from "@/components/ui/button";
+import {
+  SelectTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import {
+  Dialog,
+  DialogTitle,
+  DialogHeader,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 const AllProducts = () => {
   const location = useLocation();
@@ -79,7 +92,7 @@ const AllProducts = () => {
     if (priceSortOption === "priceLowToHigh") {
       updatedProducts = updatedProducts.sort((a, b) => a.price - b.price);
     } else if (priceSortOption === "priceHighToLow") {
-      updatedProducts = updatedProducts.sort((a, b) => b.price - a.price);
+      updatedProducts = updatedProducts.sort((a, b) => b.price - b.price);
     }
 
     if (dateSortOption === "newest") {
@@ -99,12 +112,9 @@ const AllProducts = () => {
     applyFilters();
   }, [applyFilters]);
 
-  // Watch for navigation state changes (e.g., clicking a category in StickyCategoriesBar)
   useEffect(() => {
     if (location.state && location.state.category) {
-      // when navigation happens to /allProducts with a category in state, update selectedCategories
       setSelectedCategories([location.state.category]);
-      // reset pagination to first page
       setCurrentPage(1);
     }
   }, [location.state]);
@@ -166,278 +176,310 @@ const AllProducts = () => {
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-10">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="text-center text-red-600 py-10">
+        Error: {error.message}
+      </div>
+    );
   }
 
-  const handlePriceRangeChange = (values) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      priceRange: values,
-    }));
-  };
-
-
   return (
-      <div className="all-products">
-        <div className="top-bar">
-          <button className="filter-button" onClick={toggleFilterPopup}>
-            Sorting
-          </button>
-          <button className="reset-button" onClick={resetFilters}>
-            Reset
-          </button>
-        </div>
-        <div className="allproduct-layout">
-          <div className="allProducts-sidebar">
-            {isSmallScreen ? (
-              <>
-                <div className="category-section">
-                  <h3>Categories</h3>
-                  <select
-                    onChange={(e) => setSelectedCategories([e.target.value])}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Select Category
-                    </option>
-                    {categoryData &&
-                      categoryData.data.map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="rating-section">
-                  <h3>Ratings</h3>
-                  <select
-                    onChange={(e) =>
-                      setFilters({ ...filters, rating: e.target.value })
-                    }
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Select Rating
-                    </option>
-                    <option>1 star</option>
-                    <option>2 star</option>
-                    <option>3 star</option>
-                    <option>4 star</option>
-                    <option>5 star</option>
-                  </select>
-                </div>
-                <div className="brand-section">
-                  <h3>Brands</h3>
-                  <select
-                    onChange={(e) => handleBrandChange(e.target.value)}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Select Brand
-                    </option>
-                    {brands.map((brand, index) => (
-                      <option key={index} value={brand}>
-                        {brand}
-                      </option>
+    <div className="min-h-screen py-5 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="flex justify-between items-center mb-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200 shadow-sm">
+        <Button
+          onClick={toggleFilterPopup}
+          className="bg-blue-600 text-white font-semibold uppercase tracking-wide hover:bg-blue-700 transition-transform hover:-translate-y-0.5"
+        >
+          Sorting
+        </Button>
+        <Button
+          onClick={resetFilters}
+          variant="outline"
+          className="border-blue-600 text-blue-600 font-semibold uppercase tracking-wide hover:bg-blue-50 hover:-translate-y-0.5"
+        >
+          Reset
+        </Button>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col md:min-w-[12rem] md:flex-col flex-row justify-between md:justify-start bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200 shadow-sm">
+          {isSmallScreen ? (
+            <>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Categories
+                </h3>
+                <Select
+                  onValueChange={(value) => setSelectedCategories([value])}
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryData?.data.map((category) => (
+                      <SelectItem key={category._id} value={category._id}>
+                        {category.name}
+                      </SelectItem>
                     ))}
-                  </select>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="category-checkboxes">
-                  <h3>Categories</h3>
-                  {categoryData &&
-                    categoryData.data.map((category) => (
-                      <div key={category._id}>
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(category._id)}
-                          onChange={() => handleCategoryChange(category._id)}
-                        />
-                        <label>{category.name}</label>
-                      </div>
-                    ))}
-                </div>
-                <div className="rating-checkboxes">
-                  <h3>Rating</h3>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <div key={star} className="rating-option">
-                      <input
-                        type="checkbox"
-                        checked={filters.rating === star}
-                        onChange={() => handleStarChange(star)}
-                      />
-                      <label>
-                        {Array.from({ length: star }, (_, i) => (
-                          <FaStar key={i} color="#f4c150" />
-                        ))}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                <div className="brand-checkboxes">
-                  <h3>Brands</h3>
-                  {brands.map((brand, index) => (
-                    <div key={index}>
-                      <input
-                        type="checkbox"
-                        checked={filters.brands.includes(brand)}
-                        onChange={() => handleBrandChange(brand)}
-                      />
-                      <label>{brand}</label>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-          <div className="allproduct-grid">
-            {currentProducts.length === 0 ? (
-              <div className="no-product-found">
-                <div className="no-product-content">
-                  <FaBoxOpen className="no-product-icon" />
-                  <h2>No products found</h2>
-                  <p className="no-product-message">We could not find any products matching your filters or search.</p>
-                  <div className="no-product-actions">
-                    <button className="reset-button" onClick={resetFilters}>
-                      Reset Filters
-                    </button>
-                  </div>
-                </div>
+                  </SelectContent>
+                </Select>
               </div>
-            ) : (
-              currentProducts.map((product) => (
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Ratings
+                </h3>
+                <Select
+                  onValueChange={(value) =>
+                    setFilters({ ...filters, rating: parseInt(value) })
+                  }
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <SelectItem key={star} value={star}>
+                        {star} Star{star > 1 ? "s" : ""}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Brands
+                </h3>
+                <Select
+                  onValueChange={(value) => handleBrandChange(value)}
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand, index) => (
+                      <SelectItem key={index} value={brand}>
+                        {brand}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Categories
+                </h3>
+                {categoryData?.data.map((category) => (
+                  <div
+                    key={category._id}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <Checkbox
+                      checked={selectedCategories.includes(category._id)}
+                      onCheckedChange={() => handleCategoryChange(category._id)}
+                    />
+                    <label className="text-sm text-gray-600 font-medium">
+                      {category.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Rating
+                </h3>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <div key={star} className="flex items-center gap-2 mb-2">
+                    <Checkbox
+                      checked={filters.rating === star}
+                      onCheckedChange={() => handleStarChange(star)}
+                    />
+                    <label className="flex items-center gap-1 text-sm text-gray-600 font-medium">
+                      {Array.from({ length: star }, (_, i) => (
+                        <FaStar key={i} className="text-yellow-400" />
+                      ))}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                  Brands
+                </h3>
+                {brands.map((brand, index) => (
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <Checkbox
+                      checked={filters.brands.includes(brand)}
+                      onCheckedChange={() => handleBrandChange(brand)}
+                    />
+                    <label className="text-sm text-gray-600 font-medium">
+                      {brand}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex-1">
+          {currentProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center bg-white rounded-xl shadow-sm border border-gray-200 p-8 mx-auto max-w-2xl my-8">
+              <FaBoxOpen className="text-blue-500 text-5xl mb-4" />
+              <h2 className="text-xl font-bold text-gray-800 mb-2">
+                No products found
+              </h2>
+              <p className="text-gray-600 text-sm mb-4 text-center">
+                We could not find any products matching your filters or search.
+              </p>
+              <Button
+                onClick={resetFilters}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+              >
+                Reset Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentProducts.map((product) => (
                 <ProductCard key={product._id} product={product} />
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              className={page === currentPage ? "active" : ""}
-              onClick={() => {
-                window.scrollTo(0, 0);
-                setCurrentPage(page);
-              }}
-            >
-              {page}
-            </button>
-          ))}
-        </div>
+      <div className="flex justify-center gap-2 mt-8 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200 shadow-sm">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <Button
+            key={page}
+            variant={page === currentPage ? "default" : "outline"}
+            className={`min-w-[2.5rem] font-semibold ${
+              page === currentPage
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "border-gray-300 text-gray-600 hover:bg-blue-50"
+            } transition-transform hover:-translate-y-0.5`}
+            onClick={() => {
+              window.scrollTo(0, 0);
+              setCurrentPage(page);
+            }}
+          >
+            {page}
+          </Button>
+        ))}
+      </div>
 
-        {showFilterPopup && (
-          <div className="filter-popup">
-            <div className="filter-popup-content">
-              <button className="close-popup" onClick={toggleFilterPopup}>
-                <FaTimes/>
-              </button>
-              <h3>Price Range</h3>
-              <Range
-                step={100}
+      <Dialog open={showFilterPopup} onOpenChange={setShowFilterPopup}>
+        <DialogContent className="sm:max-w-md bg-white rounded-xl p-6">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-gray-800">
+              Filter & Sort
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-base font-semibold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                Price Range
+              </h3>
+              <Slider
+                defaultValue={filters.priceRange}
                 min={0}
                 max={100000}
-                values={filters.priceRange}
-                onChange={handlePriceRangeChange}
-                renderTrack={({ props, children }) => (
-                  <div
-                    {...props}
-                    style={{
-                      ...props.style,
-                      height: "6px",
-                      background: "#ccc",
-                      margin: "1rem 0",
-                    }}
-                  >
-                    {children}
-                  </div>
-                )}
-                renderThumb={({ props, index }) => (
-                  <div
-                    {...props}
-                    style={{
-                      ...props.style,
-                      height: "20px",
-                      width: "20px",
-                      borderRadius: "50%",
-                      backgroundColor: "#4dbdd6",
-                      boxShadow: "0 0 3px rgba(0, 0, 0, 0.4)",
-                    }}
-                  />
-                )}
+                step={100}
+                onValueChange={(values) =>
+                  setFilters((prev) => ({ ...prev, priceRange: values }))
+                }
+                className="mt-4"
               />
-              <div className="price-display">
-                <span>
-                  Price: ${filters.priceRange[0]} - ${filters.priceRange[1]}
-                </span>
+              <div className="flex justify-between text-sm text-gray-600 mt-2">
+                <span>${filters.priceRange[0]}</span>
+                <span>${filters.priceRange[1]}</span>
               </div>
+            </div>
 
-              <h3>Sort by Price</h3>
-              <div>
-                <input
-                  type="checkbox"
-                  checked={priceSortOption === "priceLowToHigh"}
-                  onChange={() =>
-                    setPriceSortOption(
-                      priceSortOption === "priceLowToHigh"
-                        ? null
-                        : "priceLowToHigh"
-                    )
-                  }
-                />
-                <label>Price Low to High</label>
+            <div>
+              <h3 className="text-base font-semibold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                Sort by Price
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={priceSortOption === "priceLowToHigh"}
+                    onCheckedChange={() =>
+                      setPriceSortOption(
+                        priceSortOption === "priceLowToHigh"
+                          ? null
+                          : "priceLowToHigh"
+                      )
+                    }
+                  />
+                  <label className="text-sm text-gray-600 font-medium">
+                    Price Low to High
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={priceSortOption === "priceHighToLow"}
+                    onCheckedChange={() =>
+                      setPriceSortOption(
+                        priceSortOption === "priceHighToLow"
+                          ? null
+                          : "priceHighToLow"
+                      )
+                    }
+                  />
+                  <label className="text-sm text-gray-600 font-medium">
+                    Price High to Low
+                  </label>
+                </div>
               </div>
-              <div>
-                <input
-                  type="checkbox"
-                  checked={priceSortOption === "priceHighToLow"}
-                  onChange={() =>
-                    setPriceSortOption(
-                      priceSortOption === "priceHighToLow"
-                        ? null
-                        : "priceHighToLow"
-                    )
-                  }
-                />
-                <label>Price High to Low</label>
-              </div>
+            </div>
 
-              <h3>Sort by Date</h3>
-              <div>
-                <input
-                  type="checkbox"
-                  checked={dateSortOption === "newest"}
-                  onChange={() =>
-                    setDateSortOption(
-                      dateSortOption === "newest" ? null : "newest"
-                    )
-                  }
-                />
-                <label>Newest</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  checked={dateSortOption === "oldest"}
-                  onChange={() =>
-                    setDateSortOption(
-                      dateSortOption === "oldest" ? null : "oldest"
-                    )
-                  }
-                />
-                <label>Oldest</label>
+            <div>
+              <h3 className="text-base font-semibold text-gray-800 uppercase border-b-2 border-indigo-500 pb-2 mb-4">
+                Sort by Date
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={dateSortOption === "newest"}
+                    onCheckedChange={() =>
+                      setDateSortOption(
+                        dateSortOption === "newest" ? null : "newest"
+                      )
+                    }
+                  />
+                  <label className="text-sm text-gray-600 font-medium">
+                    Newest
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={dateSortOption === "oldest"}
+                    onCheckedChange={() =>
+                      setDateSortOption(
+                        dateSortOption === "oldest" ? null : "oldest"
+                      )
+                    }
+                  />
+                  <label className="text-sm text-gray-600 font-medium">
+                    Oldest
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

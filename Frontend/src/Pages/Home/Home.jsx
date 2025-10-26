@@ -1,12 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button"; // shadcn Button component
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"; // shadcn icons
 import Header from "../../Components/Header/Header";
 import ProductSlider from "../../Components/ProductSlider/ProductSlider";
 import { useGetLatestProductsQuery } from "../../redux/api/productAPI";
 import Sale from "../../Components/Sale/Sale";
 import UpcomingProducts from "../../Components/upcomingProducts/UpcomingProducts";
 import { useFetchAllCategoriesQuery } from "../../redux/api/categoryAPI";
-import "./Home.css";
 import CategoriesProducts from "../../Components/HomeProductComponent/CategoriesProducts";
 import StickyCategoriesBar from "../../Components/Navbar/StickyCategoriesBar";
 
@@ -33,16 +34,10 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { data: productData, isLoading: isProductLoading } =
-    useGetLatestProductsQuery();
+  const { data: productData, isLoading: isProductLoading } = useGetLatestProductsQuery();
   const products = productData?.products || [];
 
-  const {
-    data: categoryData,
-    isLoading: isCategoryLoading,
-    isError: isCategoryError,
-  } = useFetchAllCategoriesQuery();
-
+  const { data: categoryData, isLoading: isCategoryLoading, isError: isCategoryError } = useFetchAllCategoriesQuery();
   const categories = categoryData?.data || [];
 
   // Circular infinite loop logic for category navigation
@@ -55,7 +50,6 @@ const Home = () => {
 
   const handlePrevClick = useCallback(() => {
     setCurrentIndex((prevIndex) => {
-      // Move left, wrap around
       if (categories.length === 0) return 0;
       return (prevIndex - 1 + categories.length) % categories.length;
     });
@@ -63,7 +57,6 @@ const Home = () => {
 
   const handleNextClick = useCallback(() => {
     setCurrentIndex((prevIndex) => {
-      // Move right, wrap around
       if (categories.length === 0) return 0;
       return (prevIndex + 1) % categories.length;
     });
@@ -78,80 +71,91 @@ const Home = () => {
   return (
     <div>
       <Header />
-      {/* Sticky categories bar below navbar only when scrolled past categories-section */}
       <StickyCategoriesBar
         categories={categories}
         onCategoryClick={handleCategory}
         visible={showStickyBar}
       />
-      <div className="categories-section" ref={categoriesSectionRef}>
+      <div className="categories-section bg-white p-8 text-center" ref={categoriesSectionRef}>
         {isCategoryLoading ? (
           <p>Loading categories...</p>
         ) : isCategoryError ? (
           <p>Failed to load categories. Please try again later.</p>
         ) : (
-          <div className="categories-container">
-            <button
-              className="category-slider-button prev"
+          <div className="categories-container flex items-center justify-center relative overflow-hidden">
+            <Button
+              variant="default"
+              size="icon"
+              className="category-slider-button prev rounded-full w-11 h-11"
               onClick={handlePrevClick}
               disabled={categories.length <= 6}
             >
-              &lt;
-            </button>
-            <ul className="categories-list">
+              <ArrowLeftIcon className="h-6 w-6" />
+            </Button>
+            <ul className="categories-list flex justify-around w-full list-none p-[45px] m-0 cursor-pointer overflow-x-auto scroll-smooth transition-transform duration-400 ease-[cubic-bezier(0.4,0.2,0.2,1)]">
               {categoriesToShow.map((category) => (
-                <li key={category._id}>
-                  <a onClick={() => handleCategory(category._id)}>
+                <li key={category._id} className="m-2.5 text-center flex-[0_0_auto]">
+                  <a
+                    onClick={() => handleCategory(category._id)}
+                    className="text-[#333] text-[1.08rem] font-medium block transition-colors hover:text-[#007bff]"
+                  >
                     <img
                       src={category.image}
                       alt={category.name}
-                      className="category-image"
+                      className="category-image w-20 h-20 object-cover rounded-full mb-2 transition-transform hover:scale-110 block mx-auto border-2 border-dashed border-black"
                     />
                     {window.innerWidth > 480 ? category.name : ""}
                   </a>
                 </li>
               ))}
             </ul>
-            <button
-              className="category-slider-button next"
+            <Button
+              variant="default"
+              size="icon"
+              className="category-slider-button next rounded-full w-11 h-11"
               onClick={handleNextClick}
               disabled={categories.length <= 6}
             >
-              &gt;
-            </button>
+              <ArrowRightIcon className="h-6 w-6" />
+            </Button>
           </div>
         )}
       </div>
 
-      {/* Latest Products Slider */}
       <ProductSlider
         products={products}
         title="Latest Products"
         isLoading={isProductLoading}
         link="/filter"
       />
-      {/* Sale Section */}
       <Sale />
-      
-      <CategoriesProducts/>
+      <CategoriesProducts />
 
-      {/* Newsletter Section */}
-      <section className="newsletter-section">
-        <h2>Subscribe to Our Newsletter</h2>
-        <form onSubmit={handleSubscribe} className="newsletter-form">
+      <section className="newsletter-section max-w-full mx-auto bg-[#408de4] shadow-[0_2px_8px_rgba(35,39,47,0.07)] p-10 text-center mt-10">
+        <h2 className="text-white text-[1.6rem] font-semibold font-['Inter','Roboto','Segoe_UI',Arial,sans-serif] tracking-[0.2px] mb-4">
+          Subscribe to Our Newsletter
+        </h2>
+        <form onSubmit={handleSubscribe} className="newsletter-form flex justify-center items-center mt-4">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
-            className="newsletter-input"
+            className="newsletter-input p-2.5 border border-[#ccc] rounded-md mr-2.5 w-[250px] text-[1.08rem] font-medium font-['Inter','Roboto','Segoe_UI',Arial,sans-serif]"
           />
-          <button type="submit" className="newsletter-button">
+          <Button
+            type="submit"
+            className="newsletter-button px-4 py-2.5 bg-[#408de4] text-white rounded-md font-semibold text-[1.08rem] font-['Inter','Roboto','Segoe_UI',Arial,sans-serif] transition-colors hover:bg-[#3aa2b4]"
+          >
             Subscribe
-          </button>
+          </Button>
         </form>
-        {message && <p className="subscription-message">{message}</p>}
+        {message && (
+          <p className="subscription-message mt-4 text-black text-[1.08rem] font-medium font-['Inter','Roboto','Segoe_UI',Arial,sans-serif]">
+            {message}
+          </p>
+        )}
       </section>
       <UpcomingProducts />
     </div>

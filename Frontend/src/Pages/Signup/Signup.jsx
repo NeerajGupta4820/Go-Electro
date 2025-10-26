@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import signupimg from "../../assets/Images/signup/img.webp";
-import "./Signup.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../../Context/UserContext";
 import { useRegisterUserMutation } from "../../redux/api/userAPI";
+import { Button } from "@/components/ui/button"; // shadcn/ui Button
+import { Input } from "@/components/ui/input"; // shadcn/ui Input
+import { Label } from "@/components/ui/label"; // shadcn/ui Label
 
 const Signup = () => {
   const { user, loginUser } = useContext(UserContext);
@@ -16,7 +18,7 @@ const Signup = () => {
     email: "",
     password: "",
     phone: "",
-    age:"",
+    age: "",
     photo: null,
   });
 
@@ -90,8 +92,7 @@ const Signup = () => {
     e.preventDefault();
     console.log("Form Data:", formData);
     try {
-      // isLoading(true);
-      const { name, email, password, } = formData;
+      const { name, email, password } = formData;
       if (!name || !email || !password) {
         toast("⚠️ All fields are mandatory", {
           position: "top-center",
@@ -105,7 +106,7 @@ const Signup = () => {
 
       const res = await registerUser(formData).unwrap();
 
-      toast.success("SignUp Successfull", {
+      toast.success("SignUp Successful", {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -115,7 +116,6 @@ const Signup = () => {
 
       console.log(res);
       loginUser(res.user, res.token);
-      // isLoading(false);
       navigate("/");
     } catch (error) {
       console.error("SignUp Error:", error);
@@ -126,7 +126,6 @@ const Signup = () => {
         hideProgressBar: true,
         theme: "dark",
       });
-      isLoading(false);
     }
   };
 
@@ -134,92 +133,158 @@ const Signup = () => {
     if (user) {
       return navigate("/");
     }
-  }, []);
+  }, [user, navigate]);
 
   return (
-    <div className="main-signup">
-      <div className="signup-img">
-        <img src={signupimg} alt="Signup" />
-      </div>
-      <div className="signup-content">
-        <h2>Signup</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="age">Age</label>
-            <input
-              type="tel"
-              id="age"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="photo">Upload Photo</label>
-            <input
-              type="file"
-              id="photo"
-              name="photo"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-          {/* {formData.photo && (
-            <div className="preview">
-              <h3>Selected Photo:</h3>
-              <img src={formData.photo} alt="Selected" style={{ width: '80px', height: 'auto' }} />
+    <div className="flex min-h-[calc(100vh-2rem)] items-center justify-center bg-gray-100 mt-[-50px]">
+      <div className="flex w-full max-w-5xl flex-col-reverse md:flex-row items-center">
+        {/* Image Container */}
+        <div className="flex-1 flex justify-center items-center p-4">
+          <img
+            src={signupimg}
+            alt="Signup"
+            className="max-w-full h-auto object-contain"
+          />
+        </div>
+
+        {/* Form Container */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8 bg-white rounded-2xl shadow-lg border border-blue-500 max-w-lg w-full">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Signup</h2>
+          <form onSubmit={handleSubmit} className="w-full space-y-3">
+            {/* Name and Email Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter your name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter your email"
+                />
+              </div>
             </div>
-          )} */}
-          <button type="submit">Sign Up</button>
-          <div className="links">
-            <Link to="/forgot-password">Forgot Password?</Link>
-            <span> | </span>
-            <Link to="/login">SignIn</Link>
+
+            {/* Password (Full Width) */}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-gray-700">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            {/* Phone and Age Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-gray-700">
+                  Phone Number
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="age" className="text-gray-700">
+                  Age
+                </Label>
+                <Input
+                  id="age"
+                  type="tel"
+                  name="age"
+                  value={formData.age}
+                  onChange={handleChange}
+                  className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter your age"
+                />
+              </div>
+            </div>
+
+            {/* Photo Upload (Full Width) */}
+            <div className="space-y-2">
+              <Label htmlFor="photo" className="text-gray-700">
+                Upload Photo
+              </Label>
+              <Input
+                id="photo"
+                type="file"
+                name="photo"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full border-gray-400 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Photo Preview */}
+            {formData.photo && (
+              <div className="flex flex-col items-center">
+                <h3 className="text-sm font-medium text-gray-700">Selected Photo:</h3>
+                <img
+                  src={formData.photo}
+                  alt="Selected"
+                  className="w-20 h-auto mt-2 rounded-md"
+                />
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-md transition-colors duration-300"
+            >
+              {isLoading ? "Signing up..." : "Sign Up"}
+            </Button>
+          </form>
+
+          {/* Links */}
+          <div className="mt-3 flex items-center justify-center gap-2 text-sm">
+            <Link
+              to="/forgot-password"
+              className="text-blue-500 hover:underline"
+            >
+              Forgot Password?
+            </Link>
+            <span className="text-gray-400">|</span>
+            <Link to="/login" className="text-blue-500 hover:underline">
+              Sign In
+            </Link>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

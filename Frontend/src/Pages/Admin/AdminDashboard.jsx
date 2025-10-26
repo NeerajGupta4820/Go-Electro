@@ -1,68 +1,97 @@
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { FaSignOutAlt, FaHome } from "react-icons/fa";
+import { HiMenuAlt4 } from "react-icons/hi";
 import Stopwatch from "../../Components/admin/Apps/StopWatch";
-// import CoinToss from "../../Components/admin/Apps/Toss";
 import Categories from "../../Components/admin/category/Categories";
 import Chart from "../../Components/admin/Charts/Chart";
 import Coupon from "../../Components/admin/coupon/Coupon";
 import Customer from "../../Components/admin/customers/Customers";
+import Transactions from "../../Components/admin/transactions/Transactions";
 import Dashboard from "../../Components/admin/dashboard/Dashboard";
 import Product from "../../Components/admin/product/Product";
 import AdminSidebar from "../../Components/admin/sidebar/SideBar";
-import Transaction from "../../Components/admin/transactions/Transactions";
-import { HiMenuAlt4 } from "react-icons/hi";
-import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const handleLogout = () => {
-    dispatch({ type: 'user/logout' });
-    navigate('/login');
+    dispatch({ type: "user/logout" });
+    navigate("/login");
   };
+
   const handleGoHome = () => {
-    navigate('/');
+    navigate("/");
   };
+
   const handleExitDashboard = () => {
-    navigate('/');
+    navigate("/");
   };
+
   return (
-    <>
-      <header className="dashboard-main-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem', background: '#fff', borderBottom: '1px solid #eee' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button onClick={handleGoHome} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '2rem', color: '#408de4' }} title="Go to Home">
-            <FaHome />
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200 shadow-sm z-50">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleGoHome}
+            className="p-2 text-blue-500 hover:text-blue-700 transition-colors"
+            title="Go to Home"
+          >
+            <FaHome className="text-2xl" />
           </button>
-          <h2 style={{ margin: 0 }}>Admin Dashboard</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Admin Dashboard
+          </h2>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button onClick={handleExitDashboard} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.7rem', color: '#dc3545' }} title="Exit Dashboard">
-            <HiMenuAlt4 />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleExitDashboard}
+            className="p-2 text-red-500 hover:text-red-700 transition-colors"
+            title="Exit Dashboard"
+          >
+            <HiMenuAlt4 className="text-xl" />
           </button>
-          <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.7rem', color: '#dc3545' }} title="Logout">
-            <FaSignOutAlt />
+          <button
+            onClick={handleLogout}
+            className="p-2 text-red-500 hover:text-red-700 transition-colors"
+            title="Logout"
+          >
+            <FaSignOutAlt className="text-xl" />
           </button>
         </div>
       </header>
-      <div className="admin-dashboard">
-        <AdminSidebar />
-        <main className="dashboard-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/admin/dashboard" />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/product/*" element={<Product />} />
-            <Route path="/categories/*" element={<Categories />} />
-            <Route path="/coupons" element={<Coupon />} />
-            <Route path="/transaction" element={<Transaction />} />
-            <Route path="/customer" element={<Customer />} />
-            <Route path="/charts" element={<Chart />} />
-            <Route path="/app/stopwatch" element={<Stopwatch />} />
-            {/* <Route path="/app/toss" element={<CoinToss />} /> */}
-          </Routes>
-        </main>
+
+      {/* Main layout: Sidebar + Content */}
+      <div className="flex flex-1 w-full">
+        {/* Sidebar */}
+        <div className="hidden lg:block lg:w-48">
+          <AdminSidebar className="fixed top-16 left-0 w-48 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 shadow-md overflow-y-auto" />
+        </div>
+        {/* Mobile Sidebar (handled by AdminSidebar's internal logic) */}
+        <div className="lg:hidden">
+          <AdminSidebar className="w-48 h-[calc(100vh-3.5rem)] bg-white border-r border-gray-200 shadow-md overflow-y-auto" />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 w-full">
+          <main className="flex-1 min-w-0 p-6 bg-gray-50 h-[calc(100vh-4rem)] overflow-y-auto rounded-lg shadow-md">
+            <Routes>
+              <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/product/*" element={<Product />} />
+              <Route path="/categories/*" element={<Categories />} />
+              <Route path="/coupons" element={<Coupon />} />
+              <Route path="/transaction" element={<Transactions />} />
+              <Route path="/customer" element={<Customer />} />
+              <Route path="/charts" element={<Chart />} />
+              <Route path="/app/stopwatch" element={<Stopwatch />} />
+            </Routes>
+          </main>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

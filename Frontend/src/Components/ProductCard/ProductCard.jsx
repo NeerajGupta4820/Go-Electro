@@ -1,33 +1,46 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { FaShoppingCart, FaStar, FaRegStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
 import { toast } from "react-toastify";
-import "./ProductCard.css";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
-  const [isAdded, setIsAdded] = useState(false);
-  const [buttonColor, setButtonColor] = useState("#rgb(247, 139, 90)");
-  const [isZooming, setIsZooming] = useState(true);
   const navigate = useNavigate();
+  const [isAdded, setIsAdded] = useState(false);
   const wishlistProducts = useSelector((state) => state.wishlist.products);
 
-  const colors = ["#4dbdd6", "#28a745", "#ffc107", "#dc3545"];
-  const currentIndex = useRef(0);
-
-  useEffect(() => {
-    const zoomTimeout = setTimeout(() => {
-      setIsZooming(false);
-    }, 10000);
-    return () => clearTimeout(zoomTimeout);
-  }, []);
+  // Skeleton rendering when product is not available
+  if (!product) {
+    return (
+      <Card className="relative bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] border border-gray-100/50 overflow-hidden max-w-48 mx-auto">
+        <CardContent className="p-0">
+          <Skeleton className="w-full h-48 rounded-t-xl" />
+          <div className="p-4 space-y-2">
+            <Skeleton className="h-6 w-3/4 mx-auto" />
+            <Skeleton className="h-6 w-1/2 mx-auto" />
+            <div className="flex justify-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-5 w-5" />
+              ))}
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="p-4 pt-0 flex gap-2">
+          <Skeleton className="h-10 flex-1 rounded-lg" />
+          <Skeleton className="h-10 flex-1 rounded-lg" />
+        </CardFooter>
+      </Card>
+    );
+  }
 
   const handleAddToCart = () => {
-    currentIndex.current = (currentIndex.current + 1) % colors.length;
-    setButtonColor(colors[currentIndex.current]);
     dispatch(
       addToCart({
         productId: product._id,
@@ -37,7 +50,7 @@ const ProductCard = ({ product }) => {
         images: product.images,
       })
     );
-    toast.success("Added", {
+    toast.success("Added to cart", {
       position: "top-center",
       autoClose: 1000,
       hideProgressBar: true,
@@ -46,7 +59,6 @@ const ProductCard = ({ product }) => {
     setIsAdded(true);
 
     setTimeout(() => {
-      setButtonColor("#rgb(247, 139, 90)");
       setIsAdded(false);
     }, 1500);
   };
@@ -57,112 +69,145 @@ const ProductCard = ({ product }) => {
   };
 
   const productImage =
-    product.images &&
-    product.images.length > 0 &&
-    product.images[0].imageLinks.length > 0
+    product.images && product.images.length > 0 && product.images[0].imageLinks.length > 0
       ? product.images[0].imageLinks[0]
-      : "path/to/placeholder-image.jpg";
+      : "/placeholder.jpg";
 
   // Wishlist logic
-  // wishlistProducts may be an array of product objects or an array of product IDs
-  const isWishlisted = Array.isArray(wishlistProducts) && wishlistProducts.some((p) => {
-    if (!p) return false;
-    if (typeof p === 'string') return p === product._id;
-    // object case: compare _id or id or productId
-    return p._id === product._id || p.id === product._id || p.productId === product._id;
-  });
+  const isWishlisted =
+    Array.isArray(wishlistProducts) &&
+    wishlistProducts.some((p) => {
+      if (!p) return false;
+      if (typeof p === "string") return p === product._id;
+      return p._id === product._id || p.id === product._id || p.productId === product._id;
+    });
+
   const handleWishlist = () => {
     if (isWishlisted) {
-      // remove and show toast on success/failure
-      dispatch(removeFromWishlist(product._id)).unwrap()
+      dispatch(removeFromWishlist(product._id))
+        .unwrap()
         .then(() => {
-          toast.info('Removed from wishlist', {
-            position: 'top-center',
+          toast.info("Removed from wishlist", {
+            position: "top-center",
             autoClose: 1200,
             hideProgressBar: true,
-            theme: 'dark',
+            theme: "dark",
           });
         })
         .catch((err) => {
-          toast.error(err?.message || 'Failed to remove from wishlist', {
-            position: 'top-center',
+          toast.error(err?.message || "Failed to remove from wishlist", {
+            position: "top-center",
             autoClose: 1500,
             hideProgressBar: true,
-            theme: 'dark',
+            theme: "dark",
           });
         });
     } else {
-      // add and show toast on success/failure
-      dispatch(addToWishlist(product._id)).unwrap()
+      dispatch(addToWishlist(product._id))
+        .unwrap()
         .then(() => {
-          toast.success('Added to wishlist', {
-            position: 'top-center',
+          toast.success("Added to wishlist", {
+            position: "top-center",
             autoClose: 1200,
             hideProgressBar: true,
-            theme: 'dark',
+            theme: "dark",
           });
         })
         .catch((err) => {
-          toast.error(err?.message || 'Failed to add to wishlist', {
-            position: 'top-center',
+          toast.error(err?.message || "Failed to add to wishlist", {
+            position: "top-center",
             autoClose: 1500,
             hideProgressBar: true,
-            theme: 'dark',
+            theme: "dark",
           });
         });
     }
   };
 
+  const isInStock = product.stock > 0;
+
   return (
-    <div className={`product-card ${isZooming ? "zooming" : ""}`}>
-      <div className="products-card-img">
-        <img
+    <Card
+      className="relative bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300 border border-gray-100/50 group overflow-hidden max-w-70 mx-auto"
+    >
+      <CardContent className="p-0">
+        <div
+          className="relative h-48 cursor-pointer group-hover:scale-105 transition-transform duration-300"
           onClick={() => handleImageClick(product._id)}
-          src={productImage}
-          alt={product.title}
-          className="product-photo"
-        />
-        <button
-          className="wishlist-btn"
-          onClick={handleWishlist}
-          style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none' }}
+          role="button"
+          tabIndex={0}
         >
-          {isWishlisted ? (
-            <FaHeart color="#e74c3c" size={24} />
-          ) : (
-            <FaRegHeart color="#e74c3c" size={24} />
-          )}
-        </button>
-      </div>
-      <div className="product-card-info">
-        <h4 className="product-title">{product.title}</h4>
-        <p>Rs.{product.price}</p>
-        <div className="products-stars">
-          {[...Array(5)].map((_, i) =>
-            i < product.ratings ? (
-              <FaStar key={i} className="active" />
+          <img
+            src={productImage}
+            alt={product.title}
+            className="w-full h-full object-contain rounded-t-xl"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-3 right-3 text-red-500 hover:text-red-600 hover:scale-110 transition-transform bg-white/80 rounded-full p-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleWishlist();
+            }}
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            {isWishlisted ? (
+              <FaHeart size={26} className="fill-current" />
             ) : (
-              <FaRegStar key={i} className="inactive" style={{ color: "#ffc107" }} />
-            )
+              <FaRegHeart size={26} className="fill-current" />
+            )}
+          </Button>
+          {!isInStock && (
+            <Badge className="absolute top-3 left-3 bg-red-600 hover:bg-red-600 text-white font-semibold">
+              Out of Stock
+            </Badge>
+          )}
+          {product.discount && (
+            <Badge className="absolute top-3 left-3 bg-green-500 hover:bg-green-500 text-white font-semibold">
+              {product.discount}% Off
+            </Badge>
           )}
         </div>
-        {product.stock > 0 ? (
-          <button
-            className={`add-to-cart ${isAdded ? "added" : ""}`}
-            onClick={handleAddToCart}
-            style={{ backgroundColor: buttonColor }}
-          >
-            <FaShoppingCart className={`cart-icon ${isAdded ? "move" : ""}`} />
-            {isAdded ? "Added" : "Add to Cart"}
-          </button>
-        ) : (
-          <button className="notcart-icon" disabled>
-            <FaShoppingCart />
-            Add to Cart
-          </button>
-        )}
-      </div>
-    </div>
+        <div className="p-4 space-y-2">
+          <div className="flex justify-between items-center">
+            <p className="text-gray-800 font-semibold text-base truncate">
+              {product.title || "Unnamed Product"}
+            </p>
+            {product.ratings && (
+              <div className="flex items-center gap-1">
+                <span className="text-yellow-400">★</span>
+                <span className="text-gray-600 text-sm">{product.ratings.toFixed(1)}</span>
+              </div>
+            )}
+          </div>
+          <p className="text-orange-500 font-bold text-base">
+            {product.price ? `Rs. ${product.price.toFixed(2)}` : "Price not available"}
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter className="p-4 pt-0 flex gap-2">
+        <Button
+          variant="outline"
+          className="flex-1 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+          onClick={() => handleImageClick(product._id)}
+        >
+          View Product
+        </Button>
+        <Button
+          className={`flex-1 text-white rounded-lg transition-colors duration-200 ${
+            isInStock
+              ? `bg-blue-600 hover:bg-blue-700 ${isAdded ? "bg-blue-800" : ""}`
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+          onClick={handleAddToCart}
+          disabled={!isInStock}
+        >
+          <FaShoppingCart className={`mr-2 transition-transform duration-300 ${isAdded ? "translate-x-1" : ""}`} />
+          {isAdded ? "Added" : "Add to Cart"}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
