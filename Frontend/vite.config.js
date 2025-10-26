@@ -10,6 +10,11 @@ const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      external: ['prop-types'], // Add prop-types to external dependencies
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
