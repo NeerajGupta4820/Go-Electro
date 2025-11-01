@@ -113,7 +113,7 @@ const Footer = () => {
             </div>
             <hr className="w-[92%] mx-auto border-0 border-b border-[rgba(255,255,255,0.06)] my-[18px]" />
             <p className="text-center text-[#cbd5e1] mt-2">
-              Developed by <b className="text-white">Neeraj</b>
+              Developed by <b className="text-white">Pankaj</b>
             </p>
           </div>
         </div>

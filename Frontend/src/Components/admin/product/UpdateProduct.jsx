@@ -6,8 +6,7 @@ import {
 } from "../../../redux/api/productAPI";
 import { useFetchAllCategoriesQuery } from "../../../redux/api/categoryAPI";
 import { useFetchAllCouponsQuery } from "../../../redux/api/couponAPI";
-import { FaSave, FaPlus, FaTrash } from "react-icons/fa";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus, Upload, X } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
@@ -21,184 +20,163 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 const UpdateProduct = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const { data: productData, isLoading: productLoading } = useGetProductByIdQuery(id);
   const { data: categories } = useFetchAllCategoriesQuery();
   const { data: coupons } = useFetchAllCouponsQuery();
   const [updateProduct] = useUpdateProductMutation();
-  const navigate = useNavigate();
 
+  const categoriesList = Array.isArray(categories) ? categories : categories?.data || [];
+
+  // All states in plain JavaScript
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
-  const [newImages, setNewImages] = useState([{ color: "", images: [] }]);
   const [colorImages, setColorImages] = useState([{ color: "", images: [], _id: "" }]);
+  const [newImages, setNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [associatedCoupons, setAssociatedCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState("");
 
+  // Load product data
   useEffect(() => {
-    if (productData) {
-      setProductName(productData.product.title);
-      setPrice(productData.product.price);
-      setStock(productData.product.stock);
-      setDescription(productData.product.description);
-      setCategory(productData.product.category);
-      setBrand(productData.product.brand);
-      setColorImages(
-        productData.product.images || [{ color: "", images: [], _id: "" }]
-      );
-      setAssociatedCoupons(productData.product.coupons || []);
+    if (productData?.product) {
+      const p = productData.product;
+      setProductName(p.title || "");
+      setPrice(p.price || "");
+      setStock(p.stock || "");
+      setDescription(p.description || "");
+      setCategory(p.category?._id || p.category || "");
+      setBrand(p.brand || "");
+      setAssociatedCoupons(p.coupons || []);
+
+      // Safely map images
+      const safeImages = (p.images || []).map((img) => ({
+        _id: img._id || "",
+        color: img.color || "",
+        images: Array.isArray(img.imageLinks) ? img.imageLinks : [],
+      }));
+      setColorImages(safeImages.length > 0 ? safeImages : [{ color: "", images: [], _id: "" }]);
     }
   }, [productData]);
 
-  const handleImageChange = (index, e, color) => {
-    const files = Array.from(e.target.files);
-    const colorExists = newImages.find((imageObj) => imageObj.color === color);
+  // Handle new image upload
+  const handleImageChange = (color, files) => {
+    if (!color || files.length === 0) return;
 
-    let updatedImages;
-    if (colorExists) {
-      updatedImages = newImages.map((imageObj) =>
-        imageObj.color === color ? { ...imageObj, images: [...files] } : imageObj
-      );
-    } else {
-      updatedImages = [...newImages, { color: color, images: [...files] }];
-    }
-    setNewImages(updatedImages);
+    setNewImages((prev) => {
+      const filtered = prev.filter((item) => item.color !== color);
+      return [...filtered, { color, images: files }];
+    });
   };
 
-  const handleColorChange = (index, e) => {
-    const updatedColorImages = [...colorImages];
-    updatedColorImages[index].color = e.target.value;
-    setColorImages(updatedColorImages);
+  // Change color name
+  const handleColorChange = (index, value) => {
+    const updated = [...colorImages];
+    updated[index].color = value;
+    setColorImages(updated);
   };
 
-  const handleRemoveImage = (colorIndex, imageIndex) => {
-    const updatedColorImages = [...colorImages];
-    updatedColorImages[colorIndex].images = updatedColorImages[colorIndex].images.filter(
-      (_, idx) => idx !== imageIndex
-    );
-    setColorImages(updatedColorImages);
+  // Remove existing image
+  const removeExistingImage = (colorIndex, imgIndex) => {
+    const updated = [...colorImages];
+    updated[colorIndex].images = updated[colorIndex].images.filter((_, i) => i !== imgIndex);
+    setColorImages(updated);
   };
 
-  const addColorImage = () => {
-    setColorImages([...colorImages, { color: "", images: [], _id: "" }]);
+  // Add new color field
+  const addColorField = () => {
+    setColorImages((prev) => [...prev, { color: "", images: [], _id: "" }]);
   };
 
-  const handleUpload = async (files) => {
+  // Upload images to Cloudinary
+  const uploadImages = async (files) => {
     const cloudName = import.meta.env.VITE_CLOUD_NAME;
-    const uploadedImages = [];
-
     const uploadPromises = files.map(async (file) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "IBM_Project");
-
       try {
-        const response = await axios.post(
+        const res = await axios.post(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
           formData
         );
-        return response.data.secure_url;
-      } catch (error) {
-        console.error("Error uploading image:", error);
+        return res.data.secure_url;
+      } catch (err) {
         toast.error("Failed to upload image.");
         return null;
       }
     });
 
     setUploading(true);
-    try {
-      const results = await Promise.all(uploadPromises);
-      uploadedImages.push(...results.filter((url) => url !== null));
-    } catch (error) {
-      console.error("Error during bulk upload:", error);
-      toast.error("Image upload failed.");
-    } finally {
-      setUploading(false);
-    }
-
-    return uploadedImages;
+    const urls = (await Promise.all(uploadPromises)).filter(Boolean);
+    setUploading(false);
+    return urls;
   };
 
-  const mergeImagesByColor = (colorImages, productImages) => {
-    let combinedImages = productImages.map((productImage) => ({
-      color: productImage.color,
-      imageLinks: productImage.imageLinks || [],
-    }));
-
-    colorImages.forEach((colorImage) => {
-      const existingColor = combinedImages.find(
-        (productImage) => productImage.color === colorImage.color
-      );
-
-      if (existingColor) {
-        existingColor.imageLinks = [
-          ...existingColor.imageLinks,
-          ...(colorImage.imageLinks || []),
-        ];
-      } else {
-        combinedImages.push({
-          color: colorImage.color,
-          imageLinks: colorImage.imageLinks || [],
-        });
-      }
-    });
-
-    return combinedImages;
-  };
-
-  const handleAddCoupon = () => {
-    const newCoupon = coupons?.coupons.find((coupon) => coupon._id === selectedCoupon);
-    if (newCoupon && !associatedCoupons.some((coupon) => coupon._id === newCoupon._id)) {
-      setAssociatedCoupons([...associatedCoupons, newCoupon]);
+  // Add coupon
+  const addCoupon = () => {
+    const coupon = coupons?.coupons.find((c) => c._id === selectedCoupon);
+    if (coupon && !associatedCoupons.some((c) => c._id === coupon._id)) {
+      setAssociatedCoupons((prev) => [...prev, coupon]);
       setSelectedCoupon("");
-    } else {
-      toast.error("Coupon already added or invalid.");
     }
   };
 
-  const handleRemoveCoupon = (couponId) => {
-    setAssociatedCoupons(associatedCoupons.filter((coupon) => coupon._id !== couponId));
+  // Remove coupon
+  const removeCoupon = (couponId) => {
+    setAssociatedCoupons((prev) => prev.filter((c) => c._id !== couponId));
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.loading("Updating product...");
 
-    const productImages = [];
-    for (const colorImage of newImages) {
-      if (colorImage.color && colorImage.images.length > 0) {
-        const uploadedImages = await handleUpload(colorImage.images);
-        if (uploadedImages.length > 0) {
-          productImages.push({
-            color: colorImage.color,
-            imageLinks: uploadedImages,
-          });
+    // Upload new images
+    let uploadedNewImages = [];
+    for (const item of newImages) {
+      if (item.images.length > 0) {
+        const urls = await uploadImages(item.images);
+        if (urls.length > 0) {
+          uploadedNewImages.push({ color: item.color, imageLinks: urls });
         }
       }
     }
 
-    const newim = mergeImagesByColor(colorImages, productImages);
-    const updatedProductData = {
+    // Merge existing + new images
+    const finalImages = colorImages
+      .map((ci) => {
+        const newImg = uploadedNewImages.find((ni) => ni.color === ci.color);
+        return {
+          color: ci.color,
+          imageLinks: [...ci.images, ...(newImg?.imageLinks || [])],
+        };
+      })
+      .filter((img) => img.imageLinks.length > 0);
+
+    const data = {
       title: productName,
-      price,
-      stock,
+      price: Number(price),
+      stock: Number(stock),
       description,
       category,
       brand,
-      images: newim,
-      coupons: associatedCoupons.map((coupon) => coupon._id),
+      images: finalImages,
+      coupons: associatedCoupons.map((c) => c._id),
     };
 
     try {
-      await updateProduct({ id, productData: updatedProductData }).unwrap();
+      await updateProduct({ id, productData: data }).unwrap();
       toast.update(toastId, {
         render: "Product updated successfully!",
         type: "success",
@@ -206,375 +184,268 @@ const UpdateProduct = () => {
         autoClose: 3000,
       });
       navigate("/admin/product");
-    } catch (error) {
-      console.error("Failed to update product:", error);
+    } catch (err) {
       toast.update(toastId, {
         render: "Failed to update product.",
         type: "error",
         isLoading: false,
         autoClose: 3000,
       });
-    } finally {
-      toast.dismiss(toastId);
     }
   };
 
-  if (productLoading) return <div className="text-center text-blue-600 text-lg font-medium">Loading...</div>;
+  if (productLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
-    <TooltipProvider>
-      <div className="container mx-auto p-6 space-y-6 bg-gray-50 min-h-screen">
-        <Card className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-blue-500 bg-white max-w-4xl mx-auto">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-blue-700 md:text-3xl">
-              Update Product
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Product Name */}
-                <div className="space-y-2">
-                  <label htmlFor="productName" className="block font-medium text-blue-700">
-                    Product Name
-                  </label>
-                  <Input
-                    id="productName"
-                    type="text"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    required
-                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                      !productName && "border-red-500"
-                    }`}
-                    placeholder="Enter product name"
-                    aria-describedby="productName-error"
-                  />
-                  {!productName && (
-                    <p id="productName-error" className="text-red-500 text-sm">
-                      Product name is required
-                    </p>
-                  )}
-                </div>
-                {/* Price */}
-                <div className="space-y-2">
-                  <label htmlFor="price" className="block font-medium text-blue-700">
-                    Price
-                  </label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    required
-                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                      !price && "border-red-500"
-                    }`}
-                    placeholder="Enter price"
-                    aria-describedby="price-error"
-                  />
-                  {!price && (
-                    <p id="price-error" className="text-red-500 text-sm">
-                      Price is required
-                    </p>
-                  )}
-                </div>
-                {/* Stock */}
-                <div className="space-y-2">
-                  <label htmlFor="stock" className="block font-medium text-blue-700">
-                    Stock
-                  </label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                    required
-                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                      !stock && "border-red-500"
-                    }`}
-                    placeholder="Enter stock quantity"
-                    aria-describedby="stock-error"
-                  />
-                  {!stock && (
-                    <p id="stock-error" className="text-red-500 text-sm">
-                      Stock is required
-                    </p>
-                  )}
-                </div>
-                {/* Category */}
-                <div className="space-y-2">
-                  <label htmlFor="category" className="block font-medium text-blue-700">
-                    Category
-                  </label>
-                  <Select
-                    value={category}
-                    onValueChange={setCategory}
-                    required
-                  >
-                    <SelectTrigger
-                      className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                        !category && "border-red-500"
-                      }`}
-                      aria-describedby="category-error"
-                    >
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.data.map((cat) => (
-                        <SelectItem key={cat._id} value={cat._id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {!category && (
-                    <p id="category-error" className="text-red-500 text-sm">
-                      Category is required
-                    </p>
-                  )}
-                </div>
-                {/* Brand */}
-                <div className="space-y-2">
-                  <label htmlFor="brand" className="block font-medium text-blue-700">
-                    Brand
-                  </label>
-                  <Input
-                    id="brand"
-                    type="text"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                    required
-                    className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                      !brand && "border-red-500"
-                    }`}
-                    placeholder="Enter brand name"
-                    aria-describedby="brand-error"
-                  />
-                  {!brand && (
-                    <p id="brand-error" className="text-red-500 text-sm">
-                      Brand is required
-                    </p>
-                  )}
-                </div>
-              </div>
-              {/* Description (Full Row) */}
+    <div className="container mx-auto p-4 md:p-6 max-w-5xl">
+      <Card className="border-0 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+          <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">
+            Update Product
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Basic Info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label htmlFor="description" className="block font-medium text-blue-700">
-                  Description
-                </label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                <Label htmlFor="name" className="text-sm font-medium">Product Name</Label>
+                <Input
+                  id="name"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
                   required
-                  className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                    !description && "border-red-500"
-                  }`}
-                  placeholder="Enter product description"
-                  rows={4}
-                  aria-describedby="description-error"
+                  className="h-11"
+                  placeholder="Enter product name"
                 />
-                {!description && (
-                  <p id="description-error" className="text-red-500 text-sm">
-                    Description is required
-                  </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-sm font-medium">Price (₹)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                  className="h-11"
+                  placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="stock" className="text-sm font-medium">Stock</Label>
+                <Input
+                  id="stock"
+                  type="number"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
+                  required
+                  className="h-11"
+                  placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="category" className="text-sm font-medium">Category</Label>
+                <Select value={category} onValueChange={setCategory} required>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoriesList.map((cat) => (
+                      <SelectItem key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="brand" className="text-sm font-medium">Brand</Label>
+                <Input
+                  id="brand"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                  required
+                  className="h-11"
+                  placeholder="Enter brand"
+                />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="desc" className="text-sm font-medium">Description</Label>
+              <Textarea
+                id="desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                rows={4}
+                className="resize-none"
+                placeholder="Describe the product..."
+              />
+            </div>
+
+            {/* Coupons */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Associated Coupons</Label>
+              <div className="flex flex-wrap gap-2">
+                {associatedCoupons.length > 0 ? (
+                  associatedCoupons.map((coupon) => (
+                    <Badge
+                      key={coupon._id}
+                      variant="secondary"
+                      className="px-3 py-1 text-sm font-medium flex items-center gap-1"
+                    >
+                      {coupon.code} (-₹{coupon.discount})
+                      <button
+                        type="button"
+                        onClick={() => removeCoupon(coupon._id)}
+                        className="ml-1 text-red-600 hover:text-red-800"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No coupons added.</p>
                 )}
               </div>
-              {/* Associated Coupons */}
-              <div className="space-y-2">
-                <label className="block font-medium text-blue-700">Associated Coupons</label>
-                <div className="space-y-2">
-                  {associatedCoupons.length > 0 ? (
-                    associatedCoupons.map((coupon) => (
-                      <div
-                        key={coupon._id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-md border border-gray-200"
-                      >
-                        <span className="text-blue-600 font-medium">{coupon.code} - ₹{coupon.discount}</span>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => handleRemoveCoupon(coupon._id)}
-                              className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
-                              aria-label="Remove coupon"
-                            >
-                              <FaTrash className="h-3 w-3" />
-                              Remove
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Remove this coupon</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-sm italic">No coupons associated yet.</p>
-                  )}
-                </div>
-              </div>
-              {/* Add Coupon */}
-              <div className="space-y-2">
-                <label className="block font-medium text-blue-700">Add Coupon</label>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Select
-                    value={selectedCoupon}
-                    onValueChange={setSelectedCoupon}
-                  >
-                    <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md">
-                      <SelectValue placeholder="Select a coupon" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {coupons?.coupons
-                        .filter((coupon) => !associatedCoupons.some((ac) => ac._id === coupon._id))
-                        .map((coupon) => (
-                          <SelectItem key={coupon._id} value={coupon._id}>
-                            {coupon.code} - ₹{coupon.discount}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        type="button"
-                        onClick={handleAddCoupon}
-                        disabled={!selectedCoupon}
-                        className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Add coupon"
-                      >
-                        <FaPlus className="h-4 w-4" />
-                        Add Coupon
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Add selected coupon</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-              </div>
-              {/* Color and Images */}
-              {colorImages.map((colorImage, index) => (
-                <div key={colorImage._id || index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label htmlFor={`color-${index}`} className="block font-medium text-blue-700">
-                      Color
-                    </label>
-                    <Input
-                      id={`color-${index}`}
-                      type="text"
-                      value={colorImage.color}
-                      onChange={(e) => handleColorChange(index, e)}
-                      placeholder="Enter color name"
-                      required
-                      className={`w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md ${
-                        !colorImage.color && "border-red-500"
-                      }`}
-                      aria-describedby={`color-${index}-error`}
-                    />
-                    {!colorImage.color && (
-                      <p id={`color-${index}-error`} className="text-red-500 text-sm">
-                        Color is required
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor={`images-${index}`} className="block font-medium text-blue-700">
-                      Upload New Images
-                    </label>
-                    <Input
-                      id={`images-${index}`}
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(index, e, colorImage.color)}
-                      className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md"
-                    />
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {colorImage.imageLinks?.map((imageLink, i) => (
-                        <div key={i} className="relative">
-                          <img
-                            src={imageLink}
-                            alt={`preview-${i}`}
-                            className="w-12 h-12 object-cover rounded-md border border-blue-200"
-                          />
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                className="absolute top-0 right-0 p-1 text-red-600 hover:text-red-800"
-                                onClick={() => handleRemoveImage(index, i)}
-                                aria-label="Remove image"
-                              >
-                                <FaTrash className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Remove this image</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
+              <div className="flex gap-2 mt-2">
+                <Select value={selectedCoupon} onValueChange={setSelectedCoupon}>
+                  <SelectTrigger className="w-full md:w-64 h-10">
+                    <SelectValue placeholder="Select coupon" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {coupons?.coupons
+                      ?.filter((c) => !associatedCoupons.some((ac) => ac._id === c._id))
+                      .map((c) => (
+                        <SelectItem key={c._id} value={c._id}>
+                          {c.code} - ₹{c.discount}
+                        </SelectItem>
                       ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  onClick={addCoupon}
+                  disabled={!selectedCoupon}
+                  size="sm"
+                  className="h-10"
+                >
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              </div>
+            </div>
+
+            {/* Color & Images */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Images by Color</Label>
+                <Button type="button" onClick={addColorField} size="sm" variant="outline">
+                  <Plus className="h-4 w-4 mr-1" /> Add Color
+                </Button>
+              </div>
+
+              {colorImages.map((item, idx) => {
+                const images = Array.isArray(item.images) ? item.images : [];
+                const tempColorKey = item.color || `temp-${idx}`;
+                const newFiles = newImages
+                  .find((ni) => ni.color === tempColorKey)
+                  ?.images || [];
+
+                return (
+                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-gray-50">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium">Color Name</Label>
+                      <Input
+                        value={item.color}
+                        onChange={(e) => handleColorChange(idx, e.target.value)}
+                        placeholder="e.g. Black, Red"
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium">Upload New Images</Label>
+                      <Input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          const files = e.target.files ? Array.from(e.target.files) : [];
+                          handleImageChange(tempColorKey, files);
+                        }}
+                        className="h-10 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      />
+                    </div>
+
+                    {/* Preview */}
+                    <div className="md:col-span-2">
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {/* Existing Images */}
+                        {images.map((url, i) => (
+                          <div key={`existing-${i}`} className="relative group">
+                            <img
+                              src={url}
+                              alt={`preview-${i}`}
+                              className="w-16 h-16 object-cover rounded-md border"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeExistingImage(idx, i)}
+                              className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+
+                        {/* New Uploaded Files */}
+                        {newFiles.map((file, i) => (
+                          <div key={`new-${i}`} className="relative">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`new-${i}`}
+                              className="w-16 h-16 object-cover rounded-md border border-dashed border-blue-400"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {/* Add Color Button */}
-              <div className="space-y-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="button"
-                      onClick={addColorImage}
-                      className="group w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 rounded-md transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
-                      aria-label="Add another color and images"
-                    >
-                      <FaPlus className="h-5 w-5 transition-transform group-hover:rotate-90" />
-                      Add Another Color and Images
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add Another Color and Images</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              {/* Submit Button */}
-              <div className="space-y-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="submit"
-                      disabled={uploading}
-                      className="group w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50"
-                      aria-label="Update product"
-                    >
-                      {uploading ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Updating...
-                        </>
-                      ) : (
-                        <>
-                          <FaSave className="h-5 w-5 transition-transform group-hover:rotate-90" />
-                          Update Product
-                        </>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Update Product</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </TooltipProvider>
+                );
+              })}
+            </div>
+
+            {/* Submit */}
+            <div className="flex justify-end pt-6">
+              <Button
+                type="submit"
+                disabled={uploading}
+                className="w-full md:w-auto px-8 h-11 text-base font-medium"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-5 w-5" />
+                    Update Product
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

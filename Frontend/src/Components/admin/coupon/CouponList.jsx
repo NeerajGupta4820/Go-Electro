@@ -32,6 +32,7 @@ const CouponList = ({ coupons, isLoading, error, onEdit, onDelete, onAdd }) => {
                   <button className="edit-btn" onClick={() => onEdit(coupon)}>
                     Edit
                   </button>
+                  
                   <button className="delete-btn" onClick={() => onDelete(coupon._id)}>
                     Delete
                   </button>

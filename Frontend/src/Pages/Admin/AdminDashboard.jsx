@@ -84,7 +84,7 @@ const AdminDashboard = () => {
               <Route path="/categories/*" element={<Categories />} />
               <Route path="/coupons" element={<Coupon />} />
               <Route path="/transaction" element={<Transactions />} />
-              <Route path="/customer" element={<Customer />} />
+              <Route path="/users" element={<Customer />} />
               <Route path="/charts" element={<Chart />} />
               <Route path="/app/stopwatch" element={<Stopwatch />} />
             </Routes>

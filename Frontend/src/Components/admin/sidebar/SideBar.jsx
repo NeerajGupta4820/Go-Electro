@@ -158,8 +158,8 @@ const DivOne = ({ location, closeSidebar }) => (
         closeSidebar={closeSidebar}
       />
       <Li
-        url="/admin/customer"
-        text="Customer"
+        url="/admin/users"
+        text="users"
         Icon={Users}
         location={location}
         closeSidebar={closeSidebar}

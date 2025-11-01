@@ -7,7 +7,9 @@ import User from "../Modals/userModal.js";
 // product stock
 const product = async(req,res)=>{
     try {
-        const Products = await Product.find().select('name stock category');
+        const Products = await Product.find()
+            .select('name stock category')
+            .populate('category', 'name'); // Populate category with its name
 
         return res.status(200).json({success:true,Products});
     } catch (error) {
