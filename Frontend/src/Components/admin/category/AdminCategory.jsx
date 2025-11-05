@@ -81,7 +81,7 @@ const AdminCategory = () => {
   );
 
   const handleEdit = (id) => {
-    navigate(`/edit-category/${id}`);
+    navigate(`/admin/categories/edit-category/${id}`);
   };
 
   if (isLoading) return <div className="flex items-center justify-center py-20 text-xl text-gray-600">Loading...</div>;

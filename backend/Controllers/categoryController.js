@@ -59,4 +59,19 @@ const createCategory = async (req, res) => {
     }
 };
 
-export { fetchAllCategory, updateCategory, deleteCategory, createCategory };
+const getCategoryById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await Category.findById(id);
+        
+        if (!data) {
+            return res.status(404).json({ success: false, message: 'Category not found' });
+        }
+
+        res.status(200).json({ success: true, data });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error fetching category', error });
+    }
+};
+
+export { fetchAllCategory, updateCategory, deleteCategory, createCategory, getCategoryById };
