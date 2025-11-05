@@ -1,4 +1,5 @@
 // AllProduct.jsx - Now a display-only component that receives props
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -11,6 +12,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent,CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, MoreHorizontal, X } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 const AllProduct = ({
   viewMode,
@@ -26,12 +35,29 @@ const AllProduct = ({
   getCategoryName,
   truncateText,
 }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
   const handleUpdate = (id) => {
     onUpdate(id);
   };
 
-  const handleDelete = async (id) => {
-    onDelete(id);
+  const openDeleteModal = (id) => {
+    setProductToDelete(id);
+    setIsDeleteModalOpen(true);
+    setActionProduct(null); // Close action popup if open
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setProductToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (productToDelete) {
+      await onDelete(productToDelete);
+      closeDeleteModal();
+    }
   };
 
   return (
@@ -213,7 +239,7 @@ const AllProduct = ({
                 <Button className="flex-1" onClick={() => handleUpdate(selectedProduct._id)}>
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </Button>
-                <Button variant="destructive" className="flex-1" onClick={() => handleDelete(selectedProduct._id)}>
+                <Button variant="destructive" className="flex-1" onClick={() => openDeleteModal(selectedProduct._id)}>
                   <Trash2 className="mr-2 h-4 w-4" /> Delete
                 </Button>
                 <Button variant="outline" className="flex-1" onClick={() => setSelectedProduct(null)}>
@@ -240,13 +266,33 @@ const AllProduct = ({
               <Button size="sm" className="flex-1" onClick={() => handleUpdate(actionProduct._id)}>
                 <Edit className="mr-1 h-3 w-3" /> Edit
               </Button>
-              <Button size="sm" variant="destructive" className="flex-1" onClick={() => handleDelete(actionProduct._id)}>
+              <Button size="sm" variant="destructive" className="flex-1" onClick={() => openDeleteModal(actionProduct._id)}>
                 <Trash2 className="mr-1 h-3 w-3" /> Delete
               </Button>
             </div>
           </Card>
         </div>
       )}
+
+      {/* === DELETE CONFIRMATION DIALOG === */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">Confirm Deletion</DialogTitle>
+            <DialogDescription className="text-sm text-gray-600">
+              Are you sure you want to delete this product? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={closeDeleteModal}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Yes, Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -12,9 +12,15 @@ const categoryApi = createApi({
       return headers;
     }
   }),
+  tagTypes: ['Category'],
   endpoints: (builder) => ({
     fetchAllCategories: builder.query({
       query: () => '/api/category/all',
+      providesTags: ['Category']
+    }),
+    getCategoryById: builder.query({
+      query: (id) => `/api/category/${id}`,
+      providesTags: ['Category']
     }),
     createCategory: builder.mutation({
       query: (categoryData) => ({
@@ -22,6 +28,7 @@ const categoryApi = createApi({
         method: 'POST',
         body: categoryData,
       }),
+      invalidatesTags: ['Category']
     }),
     updateCategory: builder.mutation({
       query: ({ id, categoryData }) => ({
@@ -29,18 +36,21 @@ const categoryApi = createApi({
         method: 'POST',
         body: categoryData,
       }),
+      invalidatesTags: ['Category']
     }),
     deleteCategory: builder.mutation({
       query: (id) => ({
         url: `/api/category/delete/${id}`,
         method: 'POST',
       }),
+      invalidatesTags: ['Category']
     }),
   }),
 });
 
 export const { 
-  useFetchAllCategoriesQuery, 
+  useFetchAllCategoriesQuery,
+  useGetCategoryByIdQuery,
   useCreateCategoryMutation, 
   useUpdateCategoryMutation, 
   useDeleteCategoryMutation 
