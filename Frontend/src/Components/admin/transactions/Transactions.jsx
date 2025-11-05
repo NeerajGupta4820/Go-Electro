@@ -210,18 +210,44 @@ const AdminTransactions = () => {
                   </SelectContent>
                 </Select>
 
-                {/* Status Filter */}
-                <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); resetPage(); }}>
-                  <SelectTrigger className="w-44 h-10 text-sm">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Processing">Processing</SelectItem>
-                    <SelectItem value="Shipped">Shipped</SelectItem>
-                    <SelectItem value="Delivered">Delivered</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Status Filter Buttons */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={statusFilter === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setStatusFilter('all'); resetPage(); }}
+                    className="h-10"
+                  >
+                    All Status
+                  </Button>
+                  <Button
+                    variant={statusFilter === 'Processing' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setStatusFilter('Processing'); resetPage(); }}
+                    className="h-10 flex items-center gap-1"
+                  >
+                    <Clock className="h-3 w-3 text-yellow-500" />
+                    Processing
+                  </Button>
+                  <Button
+                    variant={statusFilter === 'Shipped' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setStatusFilter('Shipped'); resetPage(); }}
+                    className="h-10 flex items-center gap-1"
+                  >
+                    <Truck className="h-3 w-3 text-blue-500" />
+                    Shipped
+                  </Button>
+                  <Button
+                    variant={statusFilter === 'Delivered' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setStatusFilter('Delivered'); resetPage(); }}
+                    className="h-10 flex items-center gap-1"
+                  >
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Delivered
+                  </Button>
+                </div>
               </div>
 
               {/* View Toggle (List/Grid) - Positioned on the right side of the row */}

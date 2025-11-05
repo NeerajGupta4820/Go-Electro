@@ -97,7 +97,6 @@ const AdminCategory = () => {
             {/* Left: Category Management Title */}
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
-              <p className="text-gray-600 mt-1">Add, edit, and manage your product categories</p>
               <p className="text-sm text-gray-600 mt-2">{filteredAndSortedCategories.length} category(s)</p>
             </div>
 

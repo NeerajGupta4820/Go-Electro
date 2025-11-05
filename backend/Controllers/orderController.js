@@ -110,16 +110,25 @@ const updateOrderStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const order = await Order.findById(id);
-    if (!order) {
+    // Use findByIdAndUpdate to only update the status field
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { $set: { status: status } },
+      { 
+        new: true,         // Return the updated document
+        runValidators: false  // Don't run validators since we're only updating status
+      }
+    ).populate("user", "name email");
+
+    if (!updatedOrder) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Update the status
-    order.status = status || order.status;
-    await order.save();
-
-    res.status(200).json({ success: true, message: "Order updated successfully", order });
+    res.status(200).json({ 
+      success: true, 
+      message: "Order status updated successfully", 
+      order: updatedOrder 
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
