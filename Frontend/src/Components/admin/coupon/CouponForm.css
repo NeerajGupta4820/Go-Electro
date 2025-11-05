@@ -1,45 +1,38 @@
 .coupon-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%; 
+    width: 100%;
 }
 
 .product-selection {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+}
+
+.product-selection h4 {
+    margin: 0;
 }
 
 .product-selection table {
-    width: 80%;
-    border-collapse: collapse; 
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .product-selection thead {
-    position: sticky; 
+    position: sticky;
     top: 0;
-    background-color: #fff; 
-    z-index: 1; 
-    width: 80%;
+    background-color: #fff;
+    z-index: 10;
 }
 
-.product-selection tbody {
-    display: block;
-    max-height: 300px; 
-    overflow-y: scroll; 
-}
-
-.product-selection tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed; 
-}
-
-.product-selection th, 
+.product-selection th,
 .product-selection td {
-    padding: 10px;
-    text-align: left;
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+/* hide native scrollbars but keep scrolling functional */
+.hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
