@@ -181,7 +181,7 @@ const DivTwo = ({ location, closeSidebar }) => (
     <ul className="space-y-1">
       <Li
         url="/admin/charts"
-        text="All Charts"
+        text="Analytics"
         Icon={BarChart2}
         location={location}
         closeSidebar={closeSidebar}

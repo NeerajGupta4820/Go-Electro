@@ -40,7 +40,7 @@ import {
 } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, List, Grid, Edit, Trash2, X } from 'lucide-react';
+import { Search, Plus, List, Grid, Edit, Trash2, X, User, Shield } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -137,7 +137,6 @@ const Customers = () => {
               {/* Left: Customer Management Title */}
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-gray-900">Customer Management</h1>
-                <p className="text-gray-600 mt-1">View and manage your customers</p>
                 <p className="text-sm text-gray-600 mt-2">{filteredAndSortedUsers.length} customer(s)</p>
               </div>
 
@@ -181,17 +180,39 @@ const Customers = () => {
                   </SelectContent>
                 </Select>
 
-                {/* Role Filter */}
-                <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v); resetPage(); }}>
-                  <SelectTrigger className="w-44 h-10 text-sm">
-                    <SelectValue placeholder="Role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Role Filter Buttons */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={roleFilter === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setRoleFilter('all'); resetPage(); }}
+                    className="h-10"
+                  >
+                    All Roles
+                  </Button>
+                  <Button
+                    variant={roleFilter === 'user' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setRoleFilter('user'); resetPage(); }}
+                    className="h-10 flex items-center gap-1"
+                  >
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <User className="h-3 w-3" />
+                    </Badge>
+                    Users
+                  </Button>
+                  <Button
+                    variant={roleFilter === 'admin' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setRoleFilter('admin'); resetPage(); }}
+                    className="h-10 flex items-center gap-1"
+                  >
+                    <Badge variant="default" className="text-xs flex items-center gap-1">
+                      <Shield className="h-3 w-3" />
+                    </Badge>
+                    Admins
+                  </Button>
+                </div>
               </div>
 
               {/* View Toggle (List/Grid) - Positioned on the right side of the row */}
@@ -260,7 +281,15 @@ const Customers = () => {
                               {truncateText(user.email, 30)}
                             </TableCell>
                             <TableCell className="px-4 py-3">
-                              <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="text-xs">
+                              <Badge 
+                                variant={user.role === 'admin' ? 'default' : 'secondary'} 
+                                className="text-xs flex items-center gap-1"
+                              >
+                                {user.role === 'admin' ? (
+                                  <Shield className="h-3 w-3" />
+                                ) : (
+                                  <User className="h-3 w-3" />
+                                )}
                                 {user.role}
                               </Badge>
                             </TableCell>
@@ -313,7 +342,15 @@ const Customers = () => {
                     <div className="p-3 space-y-1">
                       <h3 className="font-medium text-sm line-clamp-2">{truncateText(user.name, 25)}</h3>
                       <p className="text-xs text-gray-600">{truncateText(user.email, 30)}</p>
-                      <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="text-xs">
+                      <Badge 
+                        variant={user.role === 'admin' ? 'default' : 'secondary'} 
+                        className="text-xs flex items-center gap-1"
+                      >
+                        {user.role === 'admin' ? (
+                          <Shield className="h-3 w-3" />
+                        ) : (
+                          <User className="h-3 w-3" />
+                        )}
                         {user.role}
                       </Badge>
                     </div>
@@ -384,7 +421,20 @@ const Customers = () => {
                   </Avatar>
                   <div className="space-y-2">
                     <p className="text-sm"><strong>Email:</strong> {selectedUser.email}</p>
-                    <p className="text-sm"><strong>Role:</strong> <Badge variant={selectedUser.role === 'admin' ? 'default' : 'secondary'}>{selectedUser.role}</Badge></p>
+                    <p className="text-sm">
+                      <strong>Role:</strong>{' '}
+                      <Badge 
+                        variant={selectedUser.role === 'admin' ? 'default' : 'secondary'}
+                        className="flex items-center gap-1"
+                      >
+                        {selectedUser.role === 'admin' ? (
+                          <Shield className="h-3 w-3" />
+                        ) : (
+                          <User className="h-3 w-3" />
+                        )}
+                        {selectedUser.role}
+                      </Badge>
+                    </p>
                   </div>
                 </div>
                 <DialogFooter className="flex justify-end gap-2 pt-4">
