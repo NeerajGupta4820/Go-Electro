@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../redux/slices/userSlice";
-import { clearCart } from "../../redux/slices/cartSlice";
+import { clearCart, setCartData } from "../../redux/slices/cartSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUpdateCartMutation } from "../../redux/api/cartAPI";
+import { fetchWishlist } from "../../redux/slices/wishlistSlice";
 import { Menu, X, Search, ShoppingCart, Heart, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ const Navbar = () => {
     totalAmount,
     totalQuantity,
   } = useSelector((state) => state.cart.cart || {});
+  const wishlistProducts = useSelector((state) => state.wishlist?.products || []);
   const [updateCart] = useUpdateCartMutation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -34,6 +36,29 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Initialize cart from localStorage (so counts show on refresh)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("cartData");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // only set if store is empty to avoid overwriting server-synced carts
+        if ((cartItems == null || cartItems.length === 0) && parsed) {
+          dispatch(setCartData(parsed));
+        }
+      }
+    } catch (err) {
+      // ignore parse errors
+    }
+
+    // If user is logged in, fetch wishlist so heart count is available immediately
+    if (user) {
+      dispatch(fetchWishlist());
+    }
+    // we only want to run this on mount / when user changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, user]);
 
   // Close menus on outside click
   useEffect(() => {
@@ -147,7 +172,14 @@ const Navbar = () => {
               className="gap-1.5 hover:text-red-500 hover:bg-red-500/10"
               onClick={() => navigate("/wishlist")}
             >
-              <Heart className="h-4.5 w-4.5" />
+              <div className="relative">
+                <Heart className="h-4.5 w-4.5" />
+                {wishlistProducts.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4.5 w-4.5 flex items-center justify-center">
+                    {wishlistProducts.length}
+                  </span>
+                )}
+              </div>
               <span className="font-medium text-sm">Wishlist</span>
             </Button>
 
@@ -318,7 +350,14 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="px-3 py-2.5 rounded-lg hover:bg-red-500/10 hover:text-red-500 transition-colors font-medium flex items-center gap-2 text-sm"
               >
-                <Heart className="h-4.5 w-4.5" />
+                <div className="relative">
+                  <Heart className="h-4.5 w-4.5" />
+                  {wishlistProducts.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4.5 w-4.5 flex items-center justify-center">
+                      {wishlistProducts.length}
+                    </span>
+                  )}
+                </div>
                 <span>Wishlist</span>
               </Link>
 

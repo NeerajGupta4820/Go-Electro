@@ -37,7 +37,16 @@ const Footer = () => {
           <div className="bg-[#1f2937] pt-[60px] pb-7 relative z-[1] -mt-[18px]">
             <div className="w-[88%] mx-auto mb-[18px] flex flex-wrap items-start justify-between gap-[18px] relative z-[2]">
               <div className="flex-1 min-w-[25%] p-[10px] text-[#d4d9df]">
-                <img src={logo} alt="logo" className="w-[92px] mb-[18px]" />
+                <Link to="/" className="flex items-center gap-2 shrink-0 group">
+                  <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
+                    <span className="text-primary-foreground font-bold text-base lg:text-lg">
+                      GE
+                    </span>
+                  </div>
+                  <span className="hidden sm:block text-lg lg:text-xl font-bold text-white">
+                    GoElectro
+                  </span>
+                </Link>
                 <p>
                   Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                   Adipisci veniam numquam maxime inventore sunt tempora quaerat
@@ -52,9 +61,7 @@ const Footer = () => {
                   </div>
                 </h3>
                 <p>MDU Rohtak 124001, Haryana India</p>
-                <p className="email-id w-fit my-3 text-[#cbd5e1]">
-                  goelectro@gmail.com
-                </p>
+                <p className="">goelectro@gmail.com</p>
                 <h4>+91-9999999999</h4>
               </div>
               <div className="flex-1 min-w-[15%] p-[10px] text-[#d4d9df]">
@@ -66,17 +73,26 @@ const Footer = () => {
                 </h3>
                 <ul className="p-0">
                   <li className="mb-[10px]">
-                    <Link to="/" className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]">
+                    <Link
+                      to="/"
+                      className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]"
+                    >
                       Home
                     </Link>
                   </li>
                   <li className="mb-[10px]">
-                    <Link to="/about" className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]">
+                    <Link
+                      to="/about"
+                      className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]"
+                    >
                       About
                     </Link>
                   </li>
                   <li className="mb-[10px]">
-                    <Link to="/contact" className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]">
+                    <Link
+                      to="/contact"
+                      className="text-[#cbd5e1] no-underline hover:text-white transition-colors duration-[0.18s]"
+                    >
                       Contact
                     </Link>
                   </li>

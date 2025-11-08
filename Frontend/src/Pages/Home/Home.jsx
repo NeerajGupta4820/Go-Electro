@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button"; // shadcn Button component
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Mail } from "lucide-react";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"; // shadcn icons
 import Header from "../../Components/Header/Header";
 import ProductSlider from "../../Components/ProductSlider/ProductSlider";
@@ -131,31 +134,38 @@ const Home = () => {
       <Sale />
       <CategoriesProducts />
 
-      <section className="newsletter-section max-w-full mx-auto bg-[#408de4] shadow-[0_2px_8px_rgba(35,39,47,0.07)] p-10 text-center mt-10">
-        <h2 className="text-white text-[1.6rem] font-semibold font-['Inter','Roboto','Segoe_UI',Arial,sans-serif] tracking-[0.2px] mb-4">
-          Subscribe to Our Newsletter
-        </h2>
-        <form onSubmit={handleSubscribe} className="newsletter-form flex justify-center items-center mt-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            className="newsletter-input p-2.5 border border-[#ccc] rounded-md mr-2.5 w-[250px] text-[1.08rem] font-medium font-['Inter','Roboto','Segoe_UI',Arial,sans-serif]"
-          />
-          <Button
-            type="submit"
-            className="newsletter-button px-4 py-2.5 bg-[#408de4] text-white rounded-md font-semibold text-[1.08rem] font-['Inter','Roboto','Segoe_UI',Arial,sans-serif] transition-colors hover:bg-[#3aa2b4]"
-          >
-            Subscribe
-          </Button>
-        </form>
-        {message && (
-          <p className="subscription-message mt-4 text-black text-[1.08rem] font-medium font-['Inter','Roboto','Segoe_UI',Arial,sans-serif]">
-            {message}
-          </p>
-        )}
+      <section className="newsletter-section max-w-full mx-auto py-12 mt-10">
+        <div className="max-w-7xl mx-auto px-4">
+          <Card className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 shadow-md">
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600 rounded-lg p-3 text-white">
+                <Mail className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-2xl font-semibold text-foreground">Subscribe to our newsletter</h2>
+                <p className="text-sm text-muted-foreground mt-1">Get the latest products, offers and updates right in your inbox.</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubscribe} className="w-full md:w-auto flex gap-3 items-center">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                aria-label="Email address"
+                required
+                className="min-w-0 w-full md:w-72"
+              />
+              <Button type="submit" className="whitespace-nowrap">
+                Subscribe
+              </Button>
+            </form>
+          </Card>
+          {message && (
+            <p className="mt-4 text-sm text-foreground font-medium text-center md:text-left">{message}</p>
+          )}
+        </div>
       </section>
       <UpcomingProducts />
     </div>

@@ -1,19 +1,16 @@
 import { useState, useRef } from 'react';
 import { useGetAllProductsQuery } from '../../redux/api/productAPI.js';
+import { useFetchAllCategoriesQuery } from '../../redux/api/categoryAPI';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { FaShoppingCart } from 'react-icons/fa';
 
-const categoriesToDisplay = [
-  { slug: 'earphone', name: 'Earphones & Headphones', icon: '🎧' },
-  { slug: 'bluetoothspeaker', name: 'Bluetooth Speakers', icon: '🔊' },
-  { slug: 'powerbank', name: 'Power Banks', icon: '🔋' },
-];
+// categories will be derived dynamically from API results below
 
 const ProductCard = ({ product, onAddToCart, isAdded }) => {
   const navigate = useNavigate();
@@ -24,36 +21,36 @@ const ProductCard = ({ product, onAddToCart, isAdded }) => {
   };
 
   return (
-    <Card className="group relative overflow-hidden  to-blue-50 border border-gray-200 shadow-[0_4px_18px_rgba(35,39,47,0.10)] hover:shadow-[0_12px_32px_rgba(35,39,47,0.13)] transition-all duration-200 hover:-translate-y-1 flex flex-col h-full animate-[scaleIn_0.3s_ease-in]">
-      <div className="relative overflow-hidden bg-gray-100/30 p-6">
+    <Card className="group relative overflow-hidden border bg-white hover:shadow-lg transition-transform duration-200 transform hover:-translate-y-1 flex flex-col h-full">
+      <div className="relative overflow-hidden bg-gray-50 p-6">
         <img
           src={product.images[0]?.imageLinks[0] || 'https://via.placeholder.com/400'}
           alt={product.title}
           className="w-full h-48 object-contain rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
           onClick={handleImageClick}
         />
-        <div className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+        <div className="absolute top-3 right-3 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
           ₹{product.price.toLocaleString()}
         </div>
       </div>
 
       <div className="flex flex-col flex-grow p-5">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 min-h-[3.5rem] font-['Inter']">
+        <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 min-h-[3.5rem] font-['Inter']">
           {product.title}
         </h3>
 
         <div className="flex items-center gap-1 mb-4">
           <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />
-          <span className="text-sm font-medium text-gray-600">
+          <span className="text-sm font-medium text-muted-foreground">
             {product.ratings} / 5
           </span>
         </div>
 
         <Button
-          className={`w-full mt-auto flex items-center gap-2 px-5 py-3 text-base font-semibold rounded-xl transition-all duration-200 shadow-[0_2px_8px_rgba(62,125,242,0.09)] ${
+          className={`w-full mt-auto flex items-center gap-2 px-5 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${
             isAdded
-              ? 'bg-green-600 hover:bg-green-700'
-              : 'bg-[#23272f] hover:bg-gray-800'
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-yellow-400 hover:bg-yellow-500 text-black'
           }`}
           onClick={onAddToCart}
         >
@@ -70,9 +67,37 @@ export default function ProductCategories() {
   const scrollRefs = useRef({});
   const dispatch = useDispatch();
   const { data, isLoading } = useGetAllProductsQuery();
+  const { data: categoriesData, isLoading: isCategoriesLoading } = useFetchAllCategoriesQuery();
 
-  if (isLoading) return <p className="text-center text-gray-600">Loading...</p>;
+  const categories = categoriesData?.data || [];
+
+  if (isLoading || isCategoriesLoading) return <p className="text-center text-gray-600">Loading...</p>;
   if (!data || !Array.isArray(data.products)) return <p className="text-center text-gray-600">No products available</p>;
+
+  // compute categories that have at least 2 products
+  const dynamicCategories = categories.filter((cat) => {
+    const count = data.products.reduce((acc, p) => {
+      // support cases where product.category may be an object with slug or an id
+      const slug = p.category?.slug || p.category;
+      return acc + (slug === cat.slug ? 1 : 0);
+    }, 0);
+    return count >= 2;
+  });
+
+  if (!dynamicCategories || dynamicCategories.length === 0) return null;
+
+  // compute counts and take top 3 categories only
+  const categoriesWithCount = dynamicCategories.map((cat) => {
+    const count = data.products.reduce((acc, p) => {
+      const slug = p.category?.slug || p.category;
+      return acc + (slug === cat.slug ? 1 : 0);
+    }, 0);
+    return { ...cat, count };
+  });
+
+  const topCategories = categoriesWithCount
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
 
   const handleAddToCart = (productId, product) => {
     setAddedProducts((prev) => new Set(prev).add(productId));
@@ -141,7 +166,7 @@ export default function ProductCategories() {
         `}
       </style>
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-['Inter']">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="text-center mb-12 animate-[fadeIn_0.5s_ease-in]">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Shop by Category
@@ -151,8 +176,8 @@ export default function ProductCategories() {
             </p>
           </div>
 
-          {categoriesToDisplay.map((category, index) => {
-            const categoryProducts = data.products.filter((p) => p.category.slug === category.slug);
+          {topCategories.map((category, index) => {
+            const categoryProducts = data.products.filter((p) => (p.category?.slug || p.category) === category.slug);
 
             return (
               <div
@@ -161,8 +186,7 @@ export default function ProductCategories() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-                    <span className="text-3xl">{category.icon}</span>
+                  <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">
                     {category.name}
                   </h2>
 

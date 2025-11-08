@@ -6,7 +6,7 @@ import img3 from "../../assets/Images/about/About Us.webp";
 import img4 from "../../assets/Images/about/Conviennce.webp"
 import img5 from "../../assets/Images/about/Execptional Service.webp";
 import img6 from "../../assets/Images/about/Quality Assurance.webp";
-import "./About.css";
+import { Card } from "@/components/ui/card";
 
 const stories = [
   {
@@ -26,19 +26,17 @@ const stories = [
 const StoryItem = ({ item, index }) => {
   const { title, description, image } = item;
   return (
-    <>
-      <div className={`column ${index % 2 === 0 ? "reverse-order" : ""}`}>
-        <div className={`story-text ${index % 2 === 0 ? "padding-left" : "padding-right"}`}>
-          <h4 className="story-title">{title}</h4>
-          <p className="story-description">{description}</p>
+    <Card className="p-6 mb-6">
+      <div className={`flex flex-col md:flex-row items-center gap-6 ${index % 2 === 0 ? '' : 'md:flex-row-reverse'}`}>
+        <div className="md:w-1/2">
+          <h4 className="text-2xl font-semibold text-foreground mb-3">{title}</h4>
+          <p className="text-muted-foreground">{description}</p>
+        </div>
+        <div className="md:w-1/2 flex justify-center">
+          <img src={image} alt={title} className="w-full max-w-sm rounded-lg shadow-md" />
         </div>
       </div>
-      <div className={`column ${index % 2 === 0 ? "" : "reverse-order"}`}>
-        <div className="story-image-wrapper">
-          <img src={image} alt={title} className="story-image" />
-        </div>
-      </div>
-    </>
+    </Card>
   );
 };
 
@@ -55,92 +53,69 @@ const About = () => {
   };
 
   return (
-    <div className="about-container">
-      <div className="about-header">
-        <h1>About Us</h1>
-        <hr />
-      </div>
-      <div className="about-content" >
-        <img className="about-image" src={img3} alt="About Us" />
-        <div className="about-text">
-          <p style={{color: "grey"}}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo odit
-            alias tenetur, quidem dolorem sit commodi illum deserunt impedit, at
-            ullam. Corrupti dolorum magni sapiente est dignissimos fugit quos
-            rerum.
-          </p>
-          <p style={{color: "grey"}}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod at
-            voluptas facilis est unde magnam vero odit! Doloribus, nihil dolor,
-            nemo numquam harum cum, laboriosam dolores quisquam sint libero
-            delectus.
-          </p>
-          <b className="mission-title">Our Mission</b>
-          <p style={{color: "grey"}}>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            magni quibusdam ea voluptas iste voluptates illo quo distinctio
-            facilis alias officiis at inventore sequi similique aut accusantium
-            ex suscipit animi.
-          </p>
+    <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <header className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-foreground">About Us</h1>
+        <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo odit alias tenetur, quidem dolorem sit commodi illum deserunt impedit, at ullam. Corrupti dolorum magni sapiente est dignissimos fugit quos rerum.
+        </p>
+      </header>
+
+      <Card className="flex flex-col md:flex-row items-center gap-6 p-6 mb-8">
+        <img src={img3} alt="About Us" className="w-full md:w-1/2 rounded-lg shadow-md" />
+        <div className="md:w-1/2">
+          <p className="text-muted-foreground">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod at voluptas facilis est unde magnam vero odit! Doloribus, nihil dolor, nemo numquam harum cum, laboriosam dolores quisquam sint libero delectus.</p>
+          <p className="mt-4 text-muted-foreground">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti, magni quibusdam ea voluptas iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.</p>
+
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Our Mission</h3>
+          <p className="text-muted-foreground mt-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti, magni quibusdam ea voluptas iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.</p>
         </div>
-      </div>
+      </Card>
 
-      <div className="why-choose-us">
-        <h2>Why Choose Us</h2>
-      </div>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold text-center mb-6">Why Choose Us</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Quality Assurance",
+              image: img4,
+              description:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
+            },
+            {
+              title: "Convenience",
+              image: img5,
+              description:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
+            },
+            {
+              title: "Exceptional Service",
+              image: img6,
+              description:
+                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
+            },
+          ].map((item, index) => (
+            <Card key={index} onClick={() => handleDivClick(index)} className="p-6 cursor-pointer hover:shadow-lg">
+              {clickedDiv === index ? (
+                <p className="text-muted-foreground">{item.description}</p>
+              ) : (
+                <div className="flex flex-col items-center text-center gap-4">
+                  <img src={item.image} alt={item.title} className="w-16 h-16 object-contain" />
+                  <h3 className="text-lg font-medium text-foreground">{item.title}</h3>
+                </div>
+              )}
+            </Card>
+          ))}
+        </div>
+      </section>
 
-      <div className="why-content">
-        {[
-          {
-            title: "Quality Assurance:",
-            image: img4,
-            description:
-              " Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
-          },
-          {
-            title: "Convenience:",
-            image: img5,
-            description:
-              "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
-          },
-          {
-            title: "Exceptional Service:",
-            image: img6,
-            description:
-              " Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deleniti, iste voluptates illo quo distinctio facilis alias officiis at inventore sequi similique aut accusantium ex suscipit animi.",
-          },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="why-item"
-            onClick={() => handleDivClick(index)}
-          >
-            {clickedDiv === index ? (
-              <p className="why-description">{item.description}</p>
-            ) : (
-              <>
-                <img className="why-icon" src={item.image} alt={item.title} />
-                <h3 className="why-title">{item.title}</h3>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Our Story</h2>
+        <p className="text-muted-foreground mb-6">We not only make the world’s most comfortable hammocks, but through training and sustainable job creation, we empower our weavers and their families to break the cycle of poverty and build a brighter future.</p>
 
-      <section className="story-section">
-        <div className="story-container">
-          <h2 className="section-title">Our Story</h2>
-          <p className="section-description" style={{color: "grey"}}>
-            We not only make the world’s most comfortable hammocks, but
-            through training and sustainable job creation, we empower our
-            weavers and their families to break the cycle of poverty and build
-            a brighter future.
-          </p>
-
+        <div className="space-y-6">
           {stories.map((item, i) => (
-            <div className="story-row" key={i}>
-              <StoryItem item={item} index={i} />
-            </div>
+            <StoryItem item={item} index={i} key={i} />
           ))}
         </div>
       </section>
