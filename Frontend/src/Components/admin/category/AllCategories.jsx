@@ -1,7 +1,7 @@
 // AllCategories.jsx - Updated grid image size to match AllProducts
 import { useState } from 'react';
 import { useDeleteCategoryMutation } from '../../../redux/api/categoryAPI';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/Components/ui/button';
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/Components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -17,11 +17,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/Components/ui/dialog';
 import { ToastContainer, toast } from 'react-toastify';
 import { Edit, Trash2, X } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/Components/ui/card';
+import { Badge } from '@/Components/ui/badge';
 
 const AllCategories = ({
   paginatedCategories = [],

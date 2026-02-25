@@ -10,8 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Skeleton } from '@/Components/ui/skeleton';
 import { TrendingUp, Users, ShoppingBag, PackageCheck } from 'lucide-react';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);

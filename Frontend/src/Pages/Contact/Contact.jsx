@@ -5,12 +5,12 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+} from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Textarea } from "@/Components/ui/textarea";
+import { Label } from "@/Components/ui/label";
+import { Avatar, AvatarFallback } from "@/Components/ui/avatar";
 import { MdEmail, MdPhone, MdWeb, MdLocationOn, MdAccessTime } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import contact_7 from "../../assets/Images/contact/contact_7.png";

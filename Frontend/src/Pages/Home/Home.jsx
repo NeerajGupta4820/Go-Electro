@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button"; // shadcn Button component
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/Components/ui/button"; // shadcn Button component
+import { Card } from "@/Components/ui/card";
+import { Input } from "@/Components/ui/input";
 import { Mail } from "lucide-react";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"; // shadcn icons
 import Header from "../../Components/Header/Header";

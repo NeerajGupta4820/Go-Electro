@@ -4,22 +4,22 @@ import { useGetAllProductsQuery } from "../../redux/api/productAPI";
 import { useFetchAllCategoriesQuery } from "../../redux/api/categoryAPI";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../../Components/ProductCard/ProductCard";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   SelectTrigger,
   Select,
   SelectContent,
   SelectItem,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
+} from "@/Components/ui/select";
+import { Checkbox } from "@/Components/ui/checkbox";
+import { Slider } from "@/Components/ui/slider";
 import {
   Dialog,
   DialogTitle,
   DialogHeader,
   DialogContent,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 
 const AllProducts = () => {
   const location = useLocation();

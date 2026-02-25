@@ -9,19 +9,19 @@ import { useFetchAllCouponsQuery } from "../../../redux/api/couponAPI";
 import { Loader2, Plus, Upload, X } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Textarea } from "@/Components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+} from "@/Components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Label } from "@/Components/ui/label";
+import { Badge } from "@/Components/ui/badge";
 
 const UpdateProduct = () => {
   const { id } = useParams();

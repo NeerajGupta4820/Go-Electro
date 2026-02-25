@@ -7,7 +7,7 @@ import {
 } from "../../../redux/api/couponAPI";
 import { useGetAllProductsQuery } from "../../../redux/api/productAPI";
 import { ToastContainer, toast } from "react-toastify";
-import { Button } from '@/components/ui/button';
+import { Button } from '@/Components/ui/button';
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/Components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -23,9 +23,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+} from '@/Components/ui/dialog';
+import { Card, CardContent } from '@/Components/ui/card';
+import { Badge } from '@/Components/ui/badge';
 import { Edit, Trash2, List, Grid } from 'lucide-react';
 import CouponForm from "./CouponForm";
 import "./CouponPage.css";

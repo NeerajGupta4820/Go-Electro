@@ -5,9 +5,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../../Context/UserContext";
 import { useRegisterUserMutation } from "../../redux/api/userAPI";
-import { Button } from "@/components/ui/button"; // shadcn/ui Button
-import { Input } from "@/components/ui/input"; // shadcn/ui Input
-import { Label } from "@/components/ui/label"; // shadcn/ui Label
+import { Button } from "@/Components/ui/button"; // shadcn/ui Button
+import { Input } from "@/Components/ui/input"; // shadcn/ui Input
+import { Label } from "@/Components/ui/label"; // shadcn/ui Label
 
 const Signup = () => {
   const { user, loginUser } = useContext(UserContext);

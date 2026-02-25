@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { removeFromCart, updateQuantity, setCartData, clearCart } from "../../redux/slices/cartSlice";
 import { FaBoxOpen } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/Components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/Components/ui/card";
+import { Input } from "@/Components/ui/input";
+import { Separator } from "@/Components/ui/separator";
 
 const Cart = () => {
   const dispatch = useDispatch();

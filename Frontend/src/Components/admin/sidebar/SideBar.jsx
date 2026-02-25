@@ -18,7 +18,7 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();

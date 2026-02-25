@@ -6,8 +6,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Skeleton } from '@/Components/ui/skeleton';
 import { RefreshCw, PieChart as PieChartIcon, ShoppingBag, PackageCheck, Users, Calendar } from 'lucide-react'; // Renamed PieChart to PieChartIcon
 
 ChartJS.register(ArcElement, Tooltip, Legend);

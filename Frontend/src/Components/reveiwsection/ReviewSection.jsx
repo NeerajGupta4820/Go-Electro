@@ -8,10 +8,10 @@ import {
 } from "../../redux/api/reviewAPI.js";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Textarea } from "@/Components/ui/textarea";
 
 const ReviewItem = ({ item, onToggleLikeOrDislike }) => (
   <Card className="mb-4 border-b border-gray-200">

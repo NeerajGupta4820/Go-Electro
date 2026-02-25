@@ -3,7 +3,7 @@ import { useGetAllProductsQuery } from "../../../redux/api/productAPI";
 import { useFetchAllCategoriesQuery } from "../../../redux/api/categoryAPI";
 import { useAllUsersMutation } from "../../../redux/api/userAPI";
 import { useGetAllOrdersQuery } from "../../../redux/api/orderAPI";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,17 +11,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/Components/ui/table";
+import { Progress } from "@/Components/ui/progress";
+import { ScrollArea } from "@/Components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+} from "@/Components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Badge } from "@/Components/ui/badge";
 import {
   Users,
   Package,

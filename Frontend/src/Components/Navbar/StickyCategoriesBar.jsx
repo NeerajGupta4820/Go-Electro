@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 
 const StickyCategoriesBar = ({ categories = [], onCategoryClick, visible = true, selectedCategory }) => {
   const scrollRef = useRef(null);

@@ -9,8 +9,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Skeleton } from '@/Components/ui/skeleton';
 import { RefreshCw, BarChart3 } from 'lucide-react'; // Added BarChart3 import
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);

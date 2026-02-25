@@ -5,16 +5,16 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import Spinner from "../../Loader/Spinner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/Components/ui/select";
 
 const CreateCategory = () => {
   const [name, setName] = useState("");

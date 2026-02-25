@@ -9,9 +9,9 @@ import { setUser } from "../../redux/slices/userSlice";
 import { setCartData } from "../../redux/slices/cartSlice";
 import { auth, googleProvider } from "./Firebase.jsx";
 import { signInWithPopup } from "firebase/auth";
-import { Button } from "@/components/ui/button"; // shadcn/ui Button
-import { Input } from "@/components/ui/input"; // shadcn/ui Input
-import { Label } from "@/components/ui/label"; // shadcn/ui Label
+import { Button } from "@/Components/ui/button"; // shadcn/ui Button
+import { Input } from "@/Components/ui/input"; // shadcn/ui Input
+import { Label } from "@/Components/ui/label"; // shadcn/ui Label
 
 const Login = () => {
   const [email, setEmail] = useState("");

@@ -5,9 +5,9 @@ import Loader from '../Loader/Loader';
 import { FaBoxOpen, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardFooter } from '@/Components/ui/card';
+import { Badge } from '@/Components/ui/badge';
 import { addToCart } from '../../redux/slices/cartSlice'; // Assuming cart slice for adding to cart
 
 const Wishlist = () => {

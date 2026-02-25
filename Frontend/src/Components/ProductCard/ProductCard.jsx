@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
 import { toast } from "react-toastify";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/Components/ui/skeleton";
+import { Button } from "@/Components/ui/button";
+import { Card, CardContent, CardFooter } from "@/Components/ui/card";
+import { Badge } from "@/Components/ui/badge";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();

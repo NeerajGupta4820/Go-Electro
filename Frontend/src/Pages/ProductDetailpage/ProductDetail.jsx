@@ -24,16 +24,16 @@ import { toast } from "react-toastify";
 import Loader from "../../Components/Loader/Loader";
 import ProductSlider from "../../Components/ProductSlider/ProductSlider";
 import ReviewSection from "../../Components/reveiwsection/ReviewSection";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/Components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Input } from "@/Components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 
 const ProductDetail = () => {
   const { id } = useParams();

@@ -8,9 +8,9 @@ import {
   useGetProductMutation,
   useGetUsersMutation,
 } from '../../../redux/api/chartAPI';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent} from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent} from '@/Components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/Components/ui/tabs';
 import dayjs from 'dayjs';
 import { RefreshCw, BarChart3, PieChartIcon, TrendingUp } from 'lucide-react';
 import { toast } from 'react-toastify';

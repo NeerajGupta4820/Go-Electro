@@ -4,10 +4,10 @@ import { useAddOrderMutation, useVerifyPaymentMutation } from "../../redux/api/o
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { clearCart } from "../../redux/slices/cartSlice";
-import { Button } from "@/components/ui/button"; // Shadcn Button
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Shadcn Card
-import { Input } from "@/components/ui/input"; // Shadcn Input
-import { Label } from "@/components/ui/label"; // Shadcn Label
+import { Button } from "@/Components/ui/button"; // Shadcn Button
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card"; // Shadcn Card
+import { Input } from "@/Components/ui/input"; // Shadcn Input
+import { Label } from "@/Components/ui/label"; // Shadcn Label
 
 const Checkout = () => {
   const navigate = useNavigate();

@@ -7,10 +7,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent,CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+} from '@/Components/ui/table';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent,CardHeader } from '@/Components/ui/card';
+import { Badge } from '@/Components/ui/badge';
 import { Edit, Trash2, MoreHorizontal, X } from 'lucide-react';
 import {
   Dialog,
@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/Components/ui/dialog';
 
 const AllProduct = ({
   viewMode,

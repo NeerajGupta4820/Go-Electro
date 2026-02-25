@@ -3,16 +3,16 @@ import { useState, useEffect, useMemo } from 'react';
 import { useGetAllProductsQuery, useDeleteProductMutation } from '../../../redux/api/productAPI';
 import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/Components/ui/select';
 import {
   Pagination,
   PaginationContent,
@@ -20,7 +20,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from '@/Components/ui/pagination';
 import { Search, Plus, List, Grid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AllProduct from './AllProduct';

@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import { useUpdateCartMutation } from "../../redux/api/cartAPI";
 import { fetchWishlist } from "../../redux/slices/wishlistSlice";
 import { Menu, X, Search, ShoppingCart, Heart, User, LogOut, LayoutDashboard } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
 
 const Navbar = () => {
   const dispatch = useDispatch();

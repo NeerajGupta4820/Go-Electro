@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { FaShoppingCart } from 'react-icons/fa';
 

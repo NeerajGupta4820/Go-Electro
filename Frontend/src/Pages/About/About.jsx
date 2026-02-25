@@ -6,7 +6,7 @@ import img3 from "../../assets/Images/about/About Us.webp";
 import img4 from "../../assets/Images/about/Conviennce.webp"
 import img5 from "../../assets/Images/about/Execptional Service.webp";
 import img6 from "../../assets/Images/about/Quality Assurance.webp";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/Components/ui/card";
 
 const stories = [
   {

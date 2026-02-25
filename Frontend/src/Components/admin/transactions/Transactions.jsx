@@ -3,16 +3,16 @@ import { useState, useEffect, useMemo } from 'react';
 import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from '../../../redux/api/orderAPI';
 import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/Components/ui/select';
 import {
   Pagination,
   PaginationContent,
@@ -20,7 +20,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from '@/Components/ui/pagination';
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/Components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -36,10 +36,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+} from '@/Components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import { Badge } from '@/Components/ui/badge';
+import { Separator } from '@/Components/ui/separator';
 import { Search, Plus, List, Grid, Edit, X, Clock, Package, Truck, CheckCircle } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 12;
