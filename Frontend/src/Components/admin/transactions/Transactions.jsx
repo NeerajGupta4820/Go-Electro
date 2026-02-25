@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from '../../../redux/api/orderAPI';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
